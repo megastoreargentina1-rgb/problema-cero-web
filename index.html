@@ -1,1 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Problema Cero</title>
 
+<style>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#020617;
+  color:#e5e7eb;
+}
+
+.container{
+  max-width:820px;
+  margin:auto;
+  padding:30px 18px;
+}
+
+.header{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.header h1{
+  font-size:32px;
+  margin:0;
+}
+
+.header h2{
+  font-size:20px;
+  color:#d1d5db;
+}
+
+.header p{
+  color:#9ca3af;
+  line-height:1.5;
+}
+
+textarea{
+  width:100%;
+  box-sizing:border-box;
+  min-height:140px;
+  padding:16px;
+  border-radius:12px;
+  border:none;
+  background:#1e293b;
+  color:white;
+  font-size:16px;
+  line-height:1.5;
+}
+
+button{
+  width:100%;
+  margin-top:12px;
+  padding:16px;
+  border:none;
+  border-radius:12px;
+  font-size:18px;
+  background:#dc2626;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.cta{
+  background:#16a34a;
+}
+
+.block{
+  background:#111827;
+  padding:20px;
+  border-radius:14px;
+  margin-top:20px;
+}
+
+#resultado{
+  display:none;
+  white-space:pre-line;
+  line-height:1.6;
+}
+
+.small{
+  color:#9ca3af;
+  font-size:14px;
+}
+
+.warning{
+  background:#2a1a1a;
+  padding:14px;
+  border-radius:10px;
+  margin-top:15px;
+  color:#fca5a5;
+  line-height:1.5;
+}
+
+input{
+  width:100%;
+  box-sizing:border-box;
+  padding:14px;
+  margin-top:10px;
+  border-radius:10px;
+  border:none;
+  background:#1e293b;
+  color:white;
+  font-size:16px;
+}
+
+@media(max-width:600px){
+  .container{
+    padding:24px 15px;
+  }
+
+  .header h1{
+    font-size:28px;
+  }
+
+  .header h2{
+    font-size:18px;
+  }
+
+  button{
+    font-size:17px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<h1>PROBLEMA CERO</h1>
+<h2>Tu negocio no tiene un problema de ventas</h2>
+
+<p>
+Tiene un problema que no estás viendo.<br><br>
+Si estás vendiendo poco o no lográs crecer… esto es para vos.
+</p>
+
+<p>
+Esto no es una IA.<br>
+Es un sistema que analiza tu caso y te dice qué hacer.
+</p>
+</div>
+
+<textarea id="input" placeholder="Contá tu problema con total sinceridad..."></textarea>
+
+<button onclick="consultar()">Analizar mi negocio</button>
+
+<p class="small">Primer diagnóstico gratis. Después decidís si querés avanzar.</p>
+
+<div id="resultado" class="block"></div>
+
+<div id="preguntas" class="block" style="display:none;">
+<p><b>Para darte el plan completo necesito 3 respuestas:</b></p>
+
+<input id="p1" placeholder="¿Qué intentaste hasta ahora?" />
+<input id="p2" placeholder="¿Dónde sentís el problema?" />
+<input id="p3" placeholder="¿Tenés tiempo o dinero para invertir?" />
+
+<button onclick="mostrarPlan()">Continuar</button>
+</div>
+
+<div id="comprar" class="block" style="display:none;">
+
+<p>
+<b>Hasta acá viste lo que está pasando.</b><br><br>
+Pero lo más importante no es eso.<br>
+Es qué hacés ahora con esto.
+</p>
+
+<p>
+Porque en este punto tenés dos caminos:
+</p>
+
+<p>
+👉 seguir haciendo lo mismo esperando que cambie<br>
+👉 o empezar a ordenar tu negocio con un plan claro
+</p>
+
+<p>
+En el plan completo vas a ver:
+</p>
+
+<p>
+✔ <b>Dónde estás perdiendo ventas hoy</b><br>
+👉 No de forma genérica, sino aplicado a tu negocio.<br><br>
+
+✔ <b>Qué tenés que cambiar primero</b><br>
+👉 Para dejar de gastar energía en cosas que no mueven la aguja.<br><br>
+
+✔ <b>Qué tenés que dejar de hacer</b><br>
+👉 Porque hay acciones que parecen avance, pero no generan ventas reales.<br><br>
+
+✔ <b>Qué tenés que probar esta semana</b><br>
+👉 Acciones concretas, simples y aplicadas a tu caso.<br><br>
+
+✔ <b>Qué tenés que priorizar</b><br>
+👉 Para destrabar el negocio sin seguir adivinando.
+</p>
+
+<p>
+Esto no es más contenido.<br>
+Es claridad para decidir qué hacer.
+</p>
+
+<div class="warning">
+Si no corregís esto, en 3 meses podés seguir igual.<br><br>
+Mismo esfuerzo.<br>
+Misma frustración.<br>
+Mismo resultado.
+</div>
+
+<a href="https://pay.hotmart.com/J105438910Q" target="_blank">
+<button class="cta">Quiero destrabar mi negocio</button>
+</a>
+
+</div>
+
+</div>
+
+<script>
+
+function getUserId(){
+  let id = localStorage.getItem("pc_user_id");
+
+  if(!id){
+    id = "user_" + Math.random().toString(36).slice(2);
+    localStorage.setItem("pc_user_id", id);
+  }
+
+  return id;
+}
+
+async function consultar(){
+
+  const input = document.getElementById("input").value.trim();
+  const resultado = document.getElementById("resultado");
+  const preguntas = document.getElementById("preguntas");
+  const comprar = document.getElementById("comprar");
+
+  if(!input){
+    resultado.style.display = "block";
+    resultado.innerText = "Escribí tu problema primero.";
+    return;
+  }
+
+  resultado.style.display = "block";
+  resultado.innerText = "Analizando tu negocio...";
+  preguntas.style.display = "none";
+  comprar.style.display = "none";
+
+  try{
+
+    const res = await fetch("https://problema-cero-api.onrender.com/api/diagnostico",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        problem: input,
+        userId: getUserId()
+      })
+    });
+
+    const data = await res.json();
+
+    const texto =
+      data.diagnostico ||
+      data.resultado ||
+      data.message ||
+      data.mensaje ||
+      null;
+
+    if(texto){
+
+      resultado.innerText =
+        texto +
+        "\n\nLa buena noticia: esto tiene solución." +
+        "\n\nEste es solo el diagnóstico inicial.";
+
+      preguntas.style.display = "block";
+
+    }else if(data.error === "Sin créditos disponibles"){
+
+      resultado.innerHTML =
+        "Ya recibiste tu diagnóstico inicial.<br><br>" +
+        "Ahora el siguiente paso es ver el plan completo aplicado a tu negocio.<br><br>" +
+        "Ahí vas a entender qué cambiar primero, qué dejar de hacer y qué probar esta semana.";
+
+      comprar.style.display = "block";
+
+    }else{
+
+      resultado.innerText =
+        "No pudimos generar el diagnóstico en este momento. Probá nuevamente en unos minutos.";
+
+    }
+
+  }catch(err){
+
+    resultado.innerText =
+      "Hubo un problema de conexión. Probá nuevamente en unos minutos.";
+
+  }
+
+}
+
+function mostrarPlan(){
+  document.getElementById("comprar").style.display = "block";
+}
+
+</script>
+
+</body>
+</html>
