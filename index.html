@@ -48,6 +48,10 @@ body{
   background:#052e16;
   border:1px solid #22c55e;
 }
+.blue{
+  background:#0f172a;
+  border:1px solid #38bdf8;
+}
 textarea,input{
   width:100%;
   box-sizing:border-box;
@@ -141,7 +145,7 @@ ul{
   <div class="block gold">
     <h3>⚠️ Antes de seguir</h3>
     <p>
-      Esto no es un test genérico. No es una respuesta al azar.  
+      Esto no es un test genérico. No es una respuesta al azar.
       Es un diagnóstico directo sobre tu caso para mostrarte qué puede estar frenando tu negocio hoy.
     </p>
   </div>
@@ -151,6 +155,20 @@ ul{
   <button onclick="consultar()">🔍 Analizar mi negocio</button>
 
   <div id="resultado" class="block"></div>
+
+  <div id="ejemploDinamico" class="block blue" style="display:none;">
+    <h3>💡 Algo importante que tenés que mirar</h3>
+    <p>
+      El problema muchas veces no es hacer más publicaciones, invertir más o probar otra idea.
+    </p>
+    <p>
+      El problema es que tu negocio puede estar mostrando su producto o servicio en el lugar equivocado, con el mensaje equivocado o frente a personas que todavía no entienden por qué deberían elegirte.
+    </p>
+    <p>
+      Por eso el análisis completo no se queda en decirte “mejorá tu marketing”.
+      Te baja el problema a acciones concretas según tu rubro: qué mostrar, qué cambiar, qué eliminar y qué hacer primero.
+    </p>
+  </div>
 
   <div id="preguntas" class="block" style="display:none;">
     <h3>🧠 Para darte el plan completo necesito 3 respuestas</h3>
@@ -167,16 +185,17 @@ ul{
     <div class="block warning">
       <h3>🔴 Esto que viste no es el problema completo</h3>
       <p>
-        El diagnóstico inicial te muestra la punta del iceberg.  
-        Pero si querés destrabarlo, necesitás saber qué cambiar primero y qué dejar de hacer.
+        El diagnóstico inicial te muestra una parte de lo que está pasando.
+      </p>
+      <p>
+        Pero si querés destrabarlo, necesitás saber qué cambiar primero, qué dejar de hacer y cómo ordenar los próximos pasos.
       </p>
     </div>
 
     <div class="block">
       <h3>🧩 ¿Qué es el análisis completo?</h3>
       <p>
-        Problema Cero no es un chat.  
-        No está pensado para conversar eternamente ni darte veinte opciones.
+        Problema Cero no es un chat. No está pensado para conversar eternamente ni darte veinte opciones.
       </p>
       <p>
         Es un sistema de diagnóstico y acción diseñado para detectar el problema principal de tu negocio y convertirlo en un plan concreto.
@@ -191,10 +210,25 @@ ul{
         <li>✔ Qué cambiar primero y por qué</li>
         <li>✔ Plan de acción de 7 días</li>
         <li>✔ Plan de mejora de 30 días</li>
-        <li>✔ Ideas de contenido aplicadas a tu negocio</li>
+        <li>✔ Ideas de contenido aplicadas a tu rubro</li>
         <li>✔ Mensajes de venta listos para usar</li>
         <li>✔ Qué eliminar para dejar de perder tiempo, energía o dinero</li>
       </ul>
+    </div>
+
+    <div class="block blue">
+      <h3>💡 Qué lo hace útil</h3>
+      <p>
+        El valor no está en que te diga “tenés que vender más”.
+      </p>
+      <p>
+        El valor está en detectar dónde se rompe tu negocio y convertir eso en una prioridad clara.
+      </p>
+      <p>
+        Si tenés un servicio, te va a orientar sobre confianza, agenda, clientas, proceso y cierre.
+        Si vendés productos, sobre oferta, percepción, contenido, cliente, mensaje y conversión.
+        Si vendés formación, sobre autoridad, promesa, inscripción y diferenciación.
+      </p>
     </div>
 
     <div class="block">
@@ -203,9 +237,7 @@ ul{
         Es un análisis único aplicado a tu negocio actual.
       </p>
       <p>
-        No es seguimiento mensual.  
-        No reemplaza una consultoría humana.  
-        No promete resultados mágicos.
+        No es seguimiento mensual. No reemplaza una consultoría humana. No promete resultados mágicos.
       </p>
       <p>
         Te da claridad, prioridad y dirección para saber qué hacer ahora.
@@ -221,7 +253,7 @@ ul{
         Está diseñado para diagnosticar, priorizar y ordenar una acción concreta.
       </p>
       <p>
-        No te da ideas sueltas. Te dice qué está fallando y qué atacar primero.
+        No te da ideas sueltas. Te dice qué está fallando, qué atacar primero y qué camino seguir.
       </p>
     </div>
 
@@ -237,7 +269,7 @@ ul{
       <h3>⛔ Esto NO es para vos si:</h3>
       <ul>
         <li>✘ Buscás una solución mágica sin cambiar nada</li>
-        <li>✘ Querés respuestas genéricas</li>
+        <li>✘ Querés respuestas genéricas sin aplicar cambios</li>
         <li>✘ No estás dispuesto a ejecutar</li>
       </ul>
     </div>
@@ -301,6 +333,8 @@ async function consultar(){
     const data=await res.json();
 
     resultado.innerText=data.diagnostico || "No se pudo generar el diagnóstico.";
+
+    document.getElementById("ejemploDinamico").style.display="block";
     document.getElementById("preguntas").style.display="block";
 
   }catch(error){
