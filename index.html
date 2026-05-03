@@ -193,7 +193,11 @@ ul{
   <button onclick="consultar()">🔍 Analizar mi negocio</button>
 
   <div id="resultado" class="block"></div>
-
+<div id="ctaRapido" style="display:none;">
+  <a href="https://pay.hotmart.com/J105438910Q" target="_blank">
+    <button class="cta">🚀 QUIERO EL PLAN COMPLETO AHORA</button>
+  </a>
+</div>
   <div id="ejemploDinamico" class="block blue" style="display:none;">
     <h3>💡 Algo importante que tenés que mirar</h3>
     <p>
@@ -383,7 +387,7 @@ async function consultar(){
     const data=await res.json();
 
     resultado.innerText=data.diagnostico || "No se pudo generar el diagnóstico.";
-
+document.getElementById("ctaRapido").style.display = "block";
     document.getElementById("ejemploDinamico").style.display="block";
     document.getElementById("preguntas").style.display="block";
 
