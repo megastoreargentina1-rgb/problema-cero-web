@@ -58,6 +58,10 @@ body{
   background:#1e1b4b;
   border:1px solid #818cf8;
 }
+.orange{
+  background:#431407;
+  border:1px solid #f97316;
+}
 textarea,input{
   width:100%;
   box-sizing:border-box;
@@ -193,11 +197,7 @@ ul{
   <button onclick="consultar()">🔍 Analizar mi negocio</button>
 
   <div id="resultado" class="block"></div>
-<div id="ctaRapido" style="display:none;">
-  <a href="https://pay.hotmart.com/J105438910Q" target="_blank">
-    <button class="cta">🚀 QUIERO EL PLAN COMPLETO AHORA</button>
-  </a>
-</div>
+
   <div id="ejemploDinamico" class="block blue" style="display:none;">
     <h3>💡 Algo importante que tenés que mirar</h3>
     <p>
@@ -210,6 +210,19 @@ ul{
       Por eso el análisis completo no se queda en decirte “mejorá tu marketing”.
       Te baja el problema a acciones concretas según tu rubro: qué mostrar, qué cambiar, qué eliminar y qué hacer primero.
     </p>
+  </div>
+
+  <div id="ctaRapido" class="block orange" style="display:none;">
+    <h3>🚀 Si esto te hizo sentido...</h3>
+    <p>
+      No necesitás más información suelta. Necesitás saber qué hacer primero.
+    </p>
+    <p>
+      Accedé al análisis completo aplicado a tu negocio + un plan de acción listo para ejecutar.
+    </p>
+    <a href="https://pay.hotmart.com/J105438910Q" target="_blank">
+      <button class="cta">🚀 QUIERO MI PLAN COMPLETO AHORA</button>
+    </a>
   </div>
 
   <div id="preguntas" class="block" style="display:none;">
@@ -237,6 +250,32 @@ ul{
       </p>
     </div>
 
+    <div class="block green">
+      <h3>🧩 Esto es lo que recibís por dentro</h3>
+      <p>
+        Cuando accedés al análisis completo, no recibís ideas sueltas.
+      </p>
+      <p>
+        Recibís un mapa claro de qué está frenando tu negocio y qué hacer para empezar a corregirlo.
+      </p>
+      <ul>
+        <li>✔ El problema principal explicado sin vueltas</li>
+        <li>✔ Qué está fallando realmente en tu negocio</li>
+        <li>✔ Qué cambiar primero y por qué</li>
+        <li>✔ Qué dejar de hacer para no seguir perdiendo tiempo</li>
+        <li>✔ Un plan de acción aplicado a tu caso</li>
+        <li>✔ Ideas de contenido según tu rubro</li>
+        <li>✔ Mensajes de venta listos para usar</li>
+        <li>✔ Una dirección concreta para avanzar sin seguir probando al azar</li>
+      </ul>
+      <p>
+        No es teoría. No es motivación. No es más información.
+      </p>
+      <p>
+        Es claridad + ejecución aplicada a tu negocio.
+      </p>
+    </div>
+
     <div class="block">
       <h3>🧩 ¿Qué es el análisis completo?</h3>
       <p>
@@ -248,20 +287,6 @@ ul{
       <p>
         El objetivo no es darte más información. El objetivo es darte dirección.
       </p>
-    </div>
-
-    <div class="block green">
-      <h3>✅ Qué vas a recibir</h3>
-      <ul>
-        <li>✔ Diagnóstico profundo aplicado a tu caso</li>
-        <li>✔ El error principal que hoy está frenando tu negocio</li>
-        <li>✔ Qué cambiar primero y por qué</li>
-        <li>✔ Plan de acción de 7 días</li>
-        <li>✔ Plan de mejora de 30 días</li>
-        <li>✔ Ideas de contenido aplicadas a tu rubro</li>
-        <li>✔ Mensajes de venta listos para usar</li>
-        <li>✔ Qué eliminar para dejar de perder tiempo, energía o dinero</li>
-      </ul>
     </div>
 
     <div class="block purple">
@@ -387,8 +412,9 @@ async function consultar(){
     const data=await res.json();
 
     resultado.innerText=data.diagnostico || "No se pudo generar el diagnóstico.";
-document.getElementById("ctaRapido").style.display = "block";
+
     document.getElementById("ejemploDinamico").style.display="block";
+    document.getElementById("ctaRapido").style.display="block";
     document.getElementById("preguntas").style.display="block";
 
   }catch(error){
