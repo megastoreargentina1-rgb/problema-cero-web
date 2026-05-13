@@ -1,101 +1,124 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Problema Cero</title>
 
 <style>
 body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#020617;
-  color:#e5e7eb;
+background:#0d0d0d;
+color:white;
+font-family:Arial,sans-serif;
+margin:0;
+padding:0;
+line-height:1.6;
 }
+
 .container{
-  max-width:880px;
-  margin:auto;
-  padding:28px 18px 50px;
+max-width:850px;
+margin:auto;
+padding:30px 20px;
 }
-.header{
-  text-align:center;
-  margin-bottom:24px;
+
+h1,h2,h3{
+line-height:1.3;
 }
-.header h1{
-  font-size:38px;
-  margin-bottom:8px;
+
+.hero{
+text-align:center;
+margin-bottom:40px;
 }
-.header p{
-  font-size:18px;
-  color:#cbd5e1;
-  line-height:1.5;
+
+.hero h1{
+font-size:42px;
+margin-bottom:10px;
 }
-.block{
-  background:#111827;
-  padding:22px;
-  border-radius:16px;
-  margin-top:20px;
-  border:1px solid #1f2937;
-  line-height:1.6;
+
+.hero p{
+font-size:20px;
+opacity:.8;
 }
-.warning{background:#7f1d1d;border:1px solid #ef4444;}
-.gold{background:#422006;border:1px solid #f59e0b;}
-.green{background:#052e16;border:1px solid #22c55e;}
-.blue{background:#0f172a;border:1px solid #38bdf8;}
-.purple{background:#1e1b4b;border:1px solid #818cf8;}
-.orange{background:#431407;border:1px solid #f97316;}
-textarea,input{
-  width:100%;
-  box-sizing:border-box;
-  padding:16px;
-  border-radius:12px;
-  border:none;
-  background:#1e293b;
-  color:white;
-  font-size:16px;
-  margin-top:10px;
+
+.video{
+margin:30px 0;
+border-radius:16px;
+overflow:hidden;
 }
-textarea{min-height:155px;}
+
+iframe{
+width:100%;
+height:450px;
+border:none;
+}
+
+textarea{
+width:100%;
+padding:16px;
+border-radius:12px;
+border:none;
+margin-top:10px;
+margin-bottom:25px;
+background:#1b1b1b;
+color:white;
+font-size:16px;
+min-height:120px;
+resize:vertical;
+box-sizing:border-box;
+}
+
 button{
-  width:100%;
-  margin-top:14px;
-  padding:17px;
-  border:none;
-  border-radius:14px;
-  font-size:18px;
-  background:#dc2626;
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
+background:white;
+color:black;
+padding:16px 24px;
+border:none;
+border-radius:12px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+width:100%;
+margin-top:10px;
 }
-button:hover{background:#b91c1c;}
-.cta{
-  background:#f97316;
-  color:#111827;
-  font-weight:900;
+
+button:hover{
+opacity:.9;
 }
-.cta:hover{background:#fb923c;}
-#resultado,#analisisCompleto{
-  display:none;
-  white-space:pre-line;
-  line-height:1.65;
+
+.block{
+margin-top:40px;
+padding:30px;
+background:#151515;
+border-radius:18px;
 }
-ul{
-  line-height:1.8;
-  padding-left:22px;
+
+.loading{
+display:none;
+text-align:center;
+margin-top:20px;
+opacity:.7;
 }
-.video-box{
-  background:#000;
-  border-radius:16px;
-  padding:14px;
-  margin-top:20px;
-  text-align:center;
-  border:1px solid #334155;
+
+.resultado{
+white-space:pre-wrap;
+margin-top:30px;
+line-height:1.8;
 }
-.small{
-  color:#94a3b8;
-  font-size:14px;
-  line-height:1.5;
+
+small{
+opacity:.6;
+}
+
+@media(max-width:768px){
+
+.hero h1{
+font-size:32px;
+}
+
+iframe{
+height:220px;
+}
+
 }
 </style>
 </head>
@@ -104,223 +127,233 @@ ul{
 
 <div class="container">
 
-  <div class="header">
-    <h1>PROBLEMA CERO</h1>
-    <p>
-      Tu negocio no tiene un problema de ventas.<br>
-      Tiene un problema que no estás viendo.
-    </p>
-  </div>
+<div class="hero">
 
-  <div class="video-box">
-    <iframe 
-      width="100%" 
-      height="400"
-      src="https://www.youtube.com/embed/N3ZwCd88io0"
-      title="Problema Cero"
-      frameborder="0"
-      allowfullscreen
-      style="border-radius:14px;">
-    </iframe>
-  </div>
+<h1>PROBLEMA CERO</h1>
 
-  <div class="block">
-    <h3>👋 Soy Hernán</h3>
-    <p>
-      Creé Problema Cero para ayudar a emprendedores y negocios a detectar con claridad qué está fallando antes de seguir invirtiendo tiempo, energía o publicidad en soluciones equivocadas.
-    </p>
-    <p>
-      Muchas veces el problema no es que falten ganas, esfuerzo o constancia. El problema es que el negocio está trabajando sobre una base que no convierte.
-    </p>
-  </div>
+<p>
+Tu negocio no tiene un problema de ventas.<br>
+Tiene un problema que no estás viendo.
+</p>
 
-  <div class="block gold">
-    <h3>⚠️ Antes de seguir</h3>
-    <p>
-      Esto no es un test genérico. No es una respuesta al azar. Es un diagnóstico directo sobre tu caso para mostrarte qué puede estar frenando tu negocio hoy.
-    </p>
-    <p>
-      Cuanto más claro expliques tu situación, más útil va a ser el análisis.
-    </p>
-  </div>
+</div>
 
-  <div class="block blue">
-    <h3>🧠 Cómo usarlo bien</h3>
-    <p>
-      No escribas solo “vendo poco”. Contá qué vendés, a quién, qué intentaste, dónde publicás, qué resultado tenés y qué sentís que no está funcionando.
-    </p>
-  </div>
+<div class="video">
 
-  <textarea id="input" placeholder="Contá tu problema con el mayor detalle posible..."></textarea>
+<iframe 
+src="https://www.youtube.com/embed/N3ZwCd88io0"
+allowfullscreen>
+</iframe>
 
-  <button onclick="consultar()">🔍 Analizar mi negocio</button>
+</div>
 
-  <div id="resultado" class="block"></div>
+<div class="block">
 
-  <div id="ctaRapido" class="block orange" style="display:none;">
-    <h3>🚀 Etapa privada de validación</h3>
+<h3>👋 Soy Hernán</h3>
 
-    <p>
-      Actualmente Problema Cero abrió una etapa privada de validación con negocios reales para seguir mejorando el sistema.
-    </p>
+<p>
+Creé Problema Cero para ayudar a emprendedores y negocios a detectar con claridad qué está fallando antes de seguir invirtiendo tiempo, energía o publicidad en soluciones equivocadas.
+</p>
 
-    <p>
-      Durante esta etapa, podés solicitar acceso al análisis completo sin pasar por pago.
-    </p>
+<p>
+Muchas veces el problema no es que falten ganas, esfuerzo o constancia.
+El problema es que el negocio está trabajando sobre una base que no convierte.
+</p>
 
-    <button class="cta" onclick="mostrarPreguntas()">
-      🚀 SOLICITAR ACCESO AL ANÁLISIS COMPLETO
-    </button>
-  </div>
+<hr>
 
-  <div id="preguntas" class="block" style="display:none;">
-    <h3>🧠 Para darte el análisis completo necesito 3 respuestas</h3>
+<h3>⚠️ Antes de seguir</h3>
 
-    <input id="p1" placeholder="¿Qué intentaste hasta ahora?" />
-    <input id="p2" placeholder="¿Dónde sentís que está el problema?" />
-    <input id="p3" placeholder="¿Tenés más tiempo o más dinero para resolverlo?" />
+<p>
+Esto no es un test genérico.
+No es una respuesta al azar.
+Es un diagnóstico directo sobre tu caso para mostrarte qué puede estar frenando tu negocio hoy.
+</p>
 
-    <button onclick="mostrarFeedback()">Continuar</button>
-  </div>
+<p>
+Cuanto más claro expliques tu situación, más útil va a ser el análisis.
+</p>
 
-  <div id="feedback" class="block purple" style="display:none;">
-    <h3>🔎 Feedback breve</h3>
+<hr>
 
-    <input id="f1" placeholder="¿El diagnóstico te mostró algo que no estabas viendo?" />
-    <input id="f2" placeholder="¿Qué parte te resultó más útil?" />
-    <input id="f3" placeholder="Del 1 al 10, ¿qué tan claro te resultó?" />
+<h3>🧠 Cómo usarlo bien</h3>
 
-    <button class="cta" onclick="generarAnalisisCompleto()">
-      🚀 DESBLOQUEAR ANÁLISIS COMPLETO
-    </button>
-  </div>
+<p>
+No escribas solo “vendo poco”.
+Contá:
+</p>
 
-  <div id="analisisCompleto" class="block"></div>
+<ul>
+<li>qué vendés</li>
+<li>a quién</li>
+<li>qué intentaste</li>
+<li>dónde publicás</li>
+<li>qué resultado tenés</li>
+<li>y qué sentís que no está funcionando</li>
+</ul>
+
+</div>
+
+<div class="block">
+
+<h3>🔍 Analizar mi negocio</h3>
+
+<textarea 
+id="problema"
+placeholder="Contame qué está pasando en tu negocio...">
+</textarea>
+
+<button onclick="analizar()">
+Analizar mi negocio
+</button>
+
+<div class="loading" id="loading">
+Analizando...
+</div>
+
+<div class="resultado" id="resultado"></div>
+
+</div>
+
+<div id="etapa2" style="display:none;">
+
+<div class="block">
+
+<h3>🚀 Etapa privada de validación</h3>
+
+<p>
+Actualmente Problema Cero abrió una etapa privada de validación con negocios reales para seguir mejorando el sistema.
+</p>
+
+<p>
+Durante esta etapa, podés solicitar acceso al análisis completo sin pasar por pago.
+</p>
+
+<button onclick="mostrarPreguntas()">
+🚀 SOLICITAR ACCESO AL ANÁLISIS COMPLETO
+</button>
+
+</div>
+
+<div id="preguntas" class="block" style="display:none;">
+
+<h3>🧠 Para darte el análisis completo necesito 3 respuestas</h3>
+
+<p><strong>¿Qué intentaste hasta ahora para resolver este problema?</strong></p>
+
+<textarea 
+id="p1"
+placeholder="Contalo con detalle...">
+</textarea>
+
+<p><strong>¿Dónde sentís hoy que está el verdadero problema?</strong></p>
+
+<textarea 
+id="p2"
+placeholder="Explicalo con tus palabras...">
+</textarea>
+
+<p><strong>¿Hoy tenés más tiempo o más dinero para resolverlo?</strong></p>
+
+<textarea 
+id="p3"
+placeholder="Contame tu situación actual...">
+</textarea>
+
+<button onclick="mostrarFeedback()">
+Continuar
+</button>
+
+</div>
+
+<div id="feedback" class="block" style="display:none;">
+
+<h3>🔎 Feedback breve</h3>
+
+<textarea 
+id="feedbackInput"
+placeholder="¿Qué te pareció el diagnóstico inicial?">
+</textarea>
+
+<button onclick="analisisCompleto()">
+🚀 DESBLOQUEAR ANÁLISIS COMPLETO
+</button>
+
+</div>
+
+<div class="loading" id="loading2">
+Generando análisis completo...
+</div>
+
+<div class="resultado" id="resultado2"></div>
+
+</div>
 
 </div>
 
 <script>
 
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZViMXU3uZXp33eXThzjL0HOCN4F0_JJcQ5nRH-6cy_-mgZGprqNb-ocPqPPQwdwBpyQ/exec";
+const API = "https://problema-0-api.onrender.com/api/diagnostico";
 
-function getUserId(){
-  let id = localStorage.getItem("pc_user_id");
+async function analizar(){
 
-  if(!id){
-    id = "user_" + Math.random().toString(36).slice(2);
-    localStorage.setItem("pc_user_id", id);
-  }
+const problema = document.getElementById("problema").value;
 
-  return id;
+if(!problema){
+alert("Contá tu problema.");
+return;
 }
 
-async function guardarCaso(datos){
-  try{
-    await fetch(GOOGLE_SCRIPT_URL,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify(datos)
-    });
-  }catch(error){
-    console.log("Error guardando caso");
-  }
-}
+document.getElementById("loading").style.display = "block";
 
-async function consultar(){
+const res = await fetch(API,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+problem:problema
+})
+});
 
-  const input = document.getElementById("input").value.trim();
+const data = await res.json();
 
-  if(!input){
-    alert("Escribí tu problema");
-    return;
-  }
+document.getElementById("loading").style.display = "none";
 
-  localStorage.setItem("pc_problem", input);
+document.getElementById("resultado").innerText = data.diagnostico;
 
-  const resultado = document.getElementById("resultado");
-
-  resultado.style.display = "block";
-  resultado.innerText = "Analizando tu negocio...";
-
-  try{
-
-    const res = await fetch("https://problema-cero-api.onrender.com/api/diagnostico",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({
-        problem:input,
-        userId:getUserId()
-      })
-    });
-
-    const data = await res.json();
-
-    resultado.innerText = data.diagnostico || "No se pudo generar respuesta.";
-
-    document.getElementById("ctaRapido").style.display = "block";
-
-    await guardarCaso({
-      userId:getUserId(),
-      tipo:"diagnostico_inicial",
-      problema:input,
-      diagnostico:data.diagnostico
-    });
-
-  }catch(error){
-
-    resultado.innerText = "Hubo un problema generando el diagnóstico.";
-
-  }
+document.getElementById("etapa2").style.display = "block";
 
 }
 
 function mostrarPreguntas(){
 
-  document.getElementById("preguntas").style.display = "block";
+document.getElementById("preguntas").style.display = "block";
 
 }
 
 function mostrarFeedback(){
 
-  const p1 = document.getElementById("p1").value.trim();
-  const p2 = document.getElementById("p2").value.trim();
-  const p3 = document.getElementById("p3").value.trim();
-
-  if(!p1 || !p2 || !p3){
-    alert("Respondé las 3 preguntas.");
-    return;
-  }
-
-  document.getElementById("feedback").style.display = "block";
+document.getElementById("feedback").style.display = "block";
 
 }
 
-async function generarAnalisisCompleto(){
+async function analisisCompleto(){
 
-  const problemaOriginal = localStorage.getItem("pc_problem") || "";
+const problema = document.getElementById("problema").value;
 
-  const p1 = document.getElementById("p1").value.trim();
-  const p2 = document.getElementById("p2").value.trim();
-  const p3 = document.getElementById("p3").value.trim();
+const p1 = document.getElementById("p1").value;
+const p2 = document.getElementById("p2").value;
+const p3 = document.getElementById("p3").value;
+const feedback = document.getElementById("feedbackInput").value;
 
-  const f1 = document.getElementById("f1").value.trim();
-  const f2 = document.getElementById("f2").value.trim();
-  const f3 = document.getElementById("f3").value.trim();
+document.getElementById("loading2").style.display = "block";
 
-  if(!f1 || !f2 || !f3){
-    alert("Completá el feedback.");
-    return;
-  }
-
-  const pedidoCompleto = `
+const promptFinal = `
 ANÁLISIS COMPLETO
 
 CASO:
-${problemaOriginal}
+${problema}
 
 RESPUESTAS:
 1. ${p1}
@@ -328,72 +361,24 @@ RESPUESTAS:
 3. ${p3}
 
 FEEDBACK:
-1. ${f1}
-2. ${f2}
-3. ${f3}
-
-Generá un análisis completo:
-- profundo
-- estratégico
-- accionable
-- sin motivación vacía
-- sin teoría genérica
-
-Debe incluir:
-- problema principal
-- causa raíz
-- errores actuales
-- prioridades
-- plan de acción
-- ideas de contenido
-- mensajes de venta
-- próximos pasos
+${feedback}
 `;
 
-  const analisis = document.getElementById("analisisCompleto");
+const res = await fetch(API,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+problem:promptFinal
+})
+});
 
-  analisis.style.display = "block";
-  analisis.innerText = "Generando análisis completo...";
+const data = await res.json();
 
-  try{
+document.getElementById("loading2").style.display = "none";
 
-    const res = await fetch("https://problema-cero-api.onrender.com/api/diagnostico",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({
-        problem:pedidoCompleto,
-        userId:getUserId()
-      })
-    });
-
-    const data = await res.json();
-
-    analisis.innerText = data.diagnostico || "No se pudo generar análisis.";
-
-    await guardarCaso({
-      userId:getUserId(),
-      tipo:"analisis_completo",
-      problema:problemaOriginal,
-      respuestas:`
-${p1}
-${p2}
-${p3}
-`,
-      feedback:`
-${f1}
-${f2}
-${f3}
-`,
-      analisisCompleto:data.diagnostico
-    });
-
-  }catch(error){
-
-    analisis.innerText = "Hubo un problema generando el análisis completo.";
-
-  }
+document.getElementById("resultado2").innerText = data.diagnostico;
 
 }
 
