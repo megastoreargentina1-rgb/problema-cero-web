@@ -38,17 +38,9 @@ body{
   border:1px solid #1f2937;
   line-height:1.6;
 }
-.warning{
-  background:#7f1d1d;
-  border:1px solid #ef4444;
-}
 .gold{
   background:#422006;
   border:1px solid #f59e0b;
-}
-.green{
-  background:#052e16;
-  border:1px solid #22c55e;
 }
 .blue{
   background:#0f172a;
@@ -303,9 +295,6 @@ busca darte claridad, prioridad y dirección.
 
 const API_URL = "https://problema-cero-api.onrender.com/api/diagnostico";
 
-const GOOGLE_SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbwnsgYCR8n3EBdYS8UUrXUY33S5YD6m4aSAqhXuPdhp94PVQ1TNyyb1d6cF-vgv4OqXLw/exec";
-
 function getUserId(){
 let id = localStorage.getItem("pc_user_id");
 
@@ -315,26 +304,6 @@ localStorage.setItem("pc_user_id", id);
 }
 
 return id;
-}
-
-async function guardarCaso(datos){
-
-try{
-
-await fetch(GOOGLE_SCRIPT_URL,{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify(datos)
-});
-
-}catch(error){
-
-console.log("Error Sheets");
-
-}
-
 }
 
 async function consultar(){
@@ -372,13 +341,6 @@ resultado.innerText =
 data.diagnostico || "No se pudo generar diagnóstico.";
 
 document.getElementById("ctaRapido").style.display = "block";
-
-await guardarCaso({
-userId:getUserId(),
-tipo:"diagnostico_inicial",
-problema:input,
-diagnostico:data.diagnostico || ""
-});
 
 }catch(error){
 
@@ -479,15 +441,6 @@ const data = await res.json();
 analisis.innerText =
 data.diagnostico ||
 "No se pudo generar análisis.";
-
-await guardarCaso({
-userId:getUserId(),
-tipo:"analisis_completo",
-problema:problemaOriginal,
-respuestas:`${p1}\n${p2}\n${p3}`,
-feedback:`${f1}\n${f2}\n${f3}`,
-analisisCompleto:data.diagnostico || ""
-});
 
 }catch(error){
 
