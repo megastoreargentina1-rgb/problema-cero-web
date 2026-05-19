@@ -92,6 +92,18 @@ button:hover{
 .cta:hover{
   background:#fb923c;
 }
+.download{
+  background:#2563eb;
+}
+.download:hover{
+  background:#1d4ed8;
+}
+.download-green{
+  background:#16a34a;
+}
+.download-green:hover{
+  background:#15803d;
+}
 #resultado{
   display:none;
   white-space:pre-line;
@@ -203,6 +215,14 @@ placeholder="Contá tu problema con el mayor detalle posible...">
 
 <div id="resultado" class="block"></div>
 
+<button 
+id="btnDescargarDiagnostico"
+class="download"
+style="display:none;"
+onclick="descargarDiagnostico()">
+📥 Descargar diagnóstico
+</button>
+
 <div id="ctaRapido" class="block orange" style="display:none;">
 <h3>🚀 Etapa privada de validación</h3>
 
@@ -283,6 +303,14 @@ placeholder="Ejemplo: 8/10 porque...">
 
 <div id="analisisCompleto" class="block"></div>
 
+<button 
+id="btnDescargarAnalisis"
+class="download-green"
+style="display:none;"
+onclick="descargarAnalisis()">
+📥 Descargar análisis completo
+</button>
+
 <p class="small">
 El resultado depende de la información que cargues y de la ejecución posterior.
 Problema Cero no promete resultados mágicos:
@@ -306,6 +334,105 @@ localStorage.setItem("pc_user_id", id);
 return id;
 }
 
+function descargarArchivo(nombreArchivo, texto){
+
+const blob = new Blob([texto], {
+type:"text/plain;charset=utf-8"
+});
+
+const link = document.createElement("a");
+
+link.href = URL.createObjectURL(blob);
+link.download = nombreArchivo;
+document.body.appendChild(link);
+link.click();
+document.body.removeChild(link);
+
+URL.revokeObjectURL(link.href);
+
+}
+
+function descargarDiagnostico(){
+
+const texto =
+document.getElementById("resultado").innerText;
+
+if(!texto || texto.trim() === ""){
+alert("Todavía no hay diagnóstico para descargar.");
+return;
+}
+
+const contenido = `
+PROBLEMA CERO
+DIAGNÓSTICO INICIAL
+
+━━━━━━━━━━━━━━━━━━━━
+
+CONSULTA ORIGINAL:
+
+${localStorage.getItem("pc_problem") || ""}
+
+━━━━━━━━━━━━━━━━━━━━
+
+DIAGNÓSTICO:
+
+${texto}
+
+━━━━━━━━━━━━━━━━━━━━
+
+Problema Cero
+Diagnóstico estratégico para negocios reales.
+`;
+
+descargarArchivo("diagnostico-problema-cero.txt", contenido);
+
+}
+
+function descargarAnalisis(){
+
+const diagnostico =
+document.getElementById("resultado").innerText;
+
+const analisis =
+document.getElementById("analisisCompleto").innerText;
+
+if(!analisis || analisis.trim() === ""){
+alert("Todavía no hay análisis completo para descargar.");
+return;
+}
+
+const contenido = `
+PROBLEMA CERO
+ANÁLISIS COMPLETO
+
+━━━━━━━━━━━━━━━━━━━━
+
+CONSULTA ORIGINAL:
+
+${localStorage.getItem("pc_problem") || ""}
+
+━━━━━━━━━━━━━━━━━━━━
+
+DIAGNÓSTICO INICIAL:
+
+${diagnostico || ""}
+
+━━━━━━━━━━━━━━━━━━━━
+
+ANÁLISIS COMPLETO:
+
+${analisis}
+
+━━━━━━━━━━━━━━━━━━━━
+
+Problema Cero
+Diagnóstico estratégico para negocios reales.
+`;
+
+descargarArchivo("analisis-completo-problema-cero.txt", contenido);
+
+}
+
 async function consultar(){
 
 const input = document.getElementById("input").value.trim();
@@ -318,9 +445,13 @@ return;
 localStorage.setItem("pc_problem", input);
 
 const resultado = document.getElementById("resultado");
+const btnDescargarDiagnostico = document.getElementById("btnDescargarDiagnostico");
+const ctaRapido = document.getElementById("ctaRapido");
 
 resultado.style.display = "block";
 resultado.innerText = "Analizando tu negocio...";
+btnDescargarDiagnostico.style.display = "none";
+ctaRapido.style.display = "none";
 
 try{
 
@@ -341,7 +472,8 @@ const data = await res.json();
 resultado.innerText =
 data.diagnostico || "No se pudo generar diagnóstico.";
 
-document.getElementById("ctaRapido").style.display = "block";
+ctaRapido.style.display = "block";
+btnDescargarDiagnostico.style.display = "block";
 
 }catch(error){
 
@@ -419,7 +551,11 @@ FEEDBACK:
 const analisis =
 document.getElementById("analisisCompleto");
 
+const btnDescargarAnalisis =
+document.getElementById("btnDescargarAnalisis");
+
 analisis.style.display = "block";
+btnDescargarAnalisis.style.display = "none";
 
 analisis.innerText =
 "Generando análisis completo...";
@@ -449,6 +585,8 @@ const data = await res.json();
 analisis.innerText =
 data.diagnostico ||
 "No se pudo generar análisis.";
+
+btnDescargarAnalisis.style.display = "block";
 
 }catch(error){
 
