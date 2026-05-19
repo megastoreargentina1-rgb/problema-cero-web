@@ -331,6 +331,7 @@ headers:{
 },
 body:JSON.stringify({
 problem:input,
+consultaOriginal:input,
 userId:getUserId()
 })
 });
@@ -432,6 +433,13 @@ headers:{
 },
 body:JSON.stringify({
 problem:pedidoCompleto,
+consultaOriginal:problemaOriginal,
+respuesta1:p1,
+respuesta2:p2,
+respuesta3:p3,
+feedback1:f1,
+feedback2:f2,
+feedback3:f3,
 userId:getUserId()
 })
 });
