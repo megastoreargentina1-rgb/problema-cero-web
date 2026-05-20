@@ -129,6 +129,7 @@ Problema Cero no promete resultados mágicos: busca darte claridad, prioridad y 
 <script>
 const API_URL = "https://problema-cero-api.onrender.com/api/diagnostico";
 const PDF_API_URL = "https://problema-cero-pdf-production.up.railway.app/generar-pdf";
+
 function getUserId(){
   let id = localStorage.getItem("pc_user_id");
   if(!id){
@@ -283,7 +284,7 @@ FEEDBACK:
   }
 }
 
-async function descargarPDFBackend(payload, nombreArchivo){
+async function descargarPDFBackend(titulo, contenido, nombreArchivo){
   let ventanaPDF = null;
 
   if(esIOS()){
@@ -297,7 +298,10 @@ async function descargarPDFBackend(payload, nombreArchivo){
     const res = await fetch(PDF_API_URL,{
       method:"POST",
       headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify(payload)
+      body:JSON.stringify({
+        titulo: titulo,
+        contenido: contenido
+      })
     });
 
     if(!res.ok){
@@ -344,12 +348,13 @@ async function descargarDiagnosticoPDF(){
     return;
   }
 
-  await descargarPDFBackend({
-    tipo:"diagnostico_inicial",
-    consultaOriginal:consulta,
-    diagnosticoInicial:diagnostico,
-    analisisCompleto:""
-  },"Diagnostico_ProblemaCero.pdf");
+  const contenido = `CONSULTA ORIGINAL:\n${consulta}\n\nDIAGNÓSTICO:\n${diagnostico}`;
+
+  await descargarPDFBackend(
+    "Diagnóstico estratégico",
+    contenido,
+    "Diagnostico_ProblemaCero.pdf"
+  );
 }
 
 async function descargarAnalisisPDF(){
@@ -362,12 +367,13 @@ async function descargarAnalisisPDF(){
     return;
   }
 
-  await descargarPDFBackend({
-    tipo:"analisis_completo",
-    consultaOriginal:consulta,
-    diagnosticoInicial:diagnostico,
-    analisisCompleto:analisis
-  },"Informe_Completo_ProblemaCero.pdf");
+  const contenido = `CONSULTA ORIGINAL:\n${consulta}\n\nDIAGNÓSTICO INICIAL:\n${diagnostico}\n\nANÁLISIS COMPLETO:\n${analisis}`;
+
+  await descargarPDFBackend(
+    "Análisis estratégico completo",
+    contenido,
+    "Informe_Completo_ProblemaCero.pdf"
+  );
 }
 </script>
 
