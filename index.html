@@ -20,6 +20,7 @@ textarea,input{width:100%;box-sizing:border-box;padding:16px;border-radius:12px;
 textarea{min-height:150px;resize:vertical;}
 button{width:100%;margin-top:14px;padding:17px;border:none;border-radius:14px;font-size:18px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;-webkit-user-select:none;user-select:none;touch-action:manipulation;}
 button:hover{background:#b91c1c;}
+button:disabled{background:#475569;cursor:not-allowed;}
 .cta{background:#f97316;color:#111827;font-weight:900;}
 .download{background:#2563eb;}
 .download-green{background:#16a34a;}
@@ -284,43 +285,12 @@ FEEDBACK:
   }
 }
 
-async function descargarPDFBackend(titulo, contenido, nombreArchivo){
-  let ventanaPDF = null;
+async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
+  const boton = document.getElementById(idBoton);
+  const textoOriginal = boton.innerText;
 
-  if(esMobile()){
-    ventanaPDF = window.open("", "_blank");
-
-    if(ventanaPDF){
-      ventanaPDF.document.write(`
-        <html>
-        <head>
-          <title>Generando PDF...</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <style>
-            body{
-              margin:0;
-              font-family:Arial,sans-serif;
-              background:#020617;
-              color:#e5e7eb;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              min-height:100vh;
-              text-align:center;
-              padding:24px;
-            }
-          </style>
-        </head>
-        <body>
-          <div>
-            <h2>Generando PDF...</h2>
-            <p>En unos segundos se abrirá tu diagnóstico.</p>
-          </div>
-        </body>
-        </html>
-      `);
-    }
-  }
+  boton.innerText = "⏳ Generando PDF...";
+  boton.disabled = true;
 
   try{
     const res = await fetch(PDF_API_URL,{
@@ -340,32 +310,25 @@ async function descargarPDFBackend(titulo, contenido, nombreArchivo){
     const url = URL.createObjectURL(blob);
 
     if(esMobile()){
-      if(ventanaPDF){
-        ventanaPDF.location.replace(url);
-      }else{
-        window.location.href = url;
-      }
-      return;
+      window.location.href = url;
+    }else{
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", nombreArchivo);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", nombreArchivo);
-    link.setAttribute("target", "_blank");
-
-    document.body.appendChild(link);
-    link.click();
-
     setTimeout(function(){
-      document.body.removeChild(link);
       URL.revokeObjectURL(url);
     }, 60000);
 
   }catch(error){
-    if(ventanaPDF){
-      ventanaPDF.close();
-    }
     alert("Hubo un problema al generar el PDF: " + error.message);
+  }finally{
+    boton.innerText = textoOriginal;
+    boton.disabled = false;
   }
 }
 
@@ -383,7 +346,8 @@ async function descargarDiagnosticoPDF(){
   await descargarPDFBackend(
     "Diagnóstico estratégico",
     contenido,
-    "Diagnostico_ProblemaCero.pdf"
+    "Diagnostico_ProblemaCero.pdf",
+    "btnDescargarDiagnostico"
   );
 }
 
@@ -402,7 +366,8 @@ async function descargarAnalisisPDF(){
   await descargarPDFBackend(
     "Análisis estratégico completo",
     contenido,
-    "Informe_Completo_ProblemaCero.pdf"
+    "Informe_Completo_ProblemaCero.pdf",
+    "btnDescargarAnalisis"
   );
 }
 </script>
