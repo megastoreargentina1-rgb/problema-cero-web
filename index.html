@@ -285,48 +285,46 @@ FEEDBACK:
   }
 }
 
+// ESTA ES LA NUEVA MAGIA: EL BOTÓN AHORA LEE EL LINK TEMPORAL
 async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
   const boton = document.getElementById(idBoton);
   const textoOriginal = boton.innerText;
 
-  boton.innerText = "⏳ Generando PDF...";
+  boton.innerText = "⏳ Preparando documento...";
   boton.disabled = true;
 
-  try{
-    const res = await fetch(PDF_API_URL,{
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({
-        titulo: titulo,
-        contenido: contenido
-      })
+  try {
+    const res = await fetch(PDF_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ titulo: titulo, contenido: contenido })
     });
 
-    if(!res.ok){
-      throw new Error("No se pudo generar el PDF.");
+    if (!res.ok) throw new Error("No se pudo conectar con el servidor de informes.");
+
+    const data = await res.json();
+    
+    if (data.ok && data.url) {
+      if (esMobile()) {
+        // En celular iOS/Android abrimos el link directo (Apple lo permite sin problema)
+        window.location.href = data.url; 
+      } else {
+        // En computadora lo descargamos directo
+        const link = document.createElement("a");
+        link.href = data.url;
+        link.setAttribute("download", nombreArchivo);
+        link.setAttribute("target", "_blank");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } else {
+      throw new Error("El servidor no devolvió una ruta válida.");
     }
 
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-
-    if(esMobile()){
-      window.location.href = url;
-    }else{
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", nombreArchivo);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    setTimeout(function(){
-      URL.revokeObjectURL(url);
-    }, 60000);
-
-  }catch(error){
+  } catch(error) {
     alert("Hubo un problema al generar el PDF: " + error.message);
-  }finally{
+  } finally {
     boton.innerText = textoOriginal;
     boton.disabled = false;
   }
