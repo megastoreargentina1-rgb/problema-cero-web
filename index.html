@@ -285,7 +285,6 @@ FEEDBACK:
   }
 }
 
-// ESTA ES LA MAGIA: ABRE EL PDF EN UNA PESTAÑA NUEVA
 async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
   const boton = document.getElementById(idBoton);
   const textoOriginal = boton.innerText;
@@ -297,7 +296,12 @@ async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
     const res = await fetch(PDF_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ titulo: titulo, contenido: contenido })
+      // ACA ESTA LA MAGIA: Le avisamos al backend si estamos en celular o no
+      body: JSON.stringify({ 
+        titulo: titulo, 
+        contenido: contenido,
+        isMobile: esMobile() 
+      })
     });
 
     if (!res.ok) throw new Error("No se pudo conectar con el servidor de informes.");
@@ -305,12 +309,10 @@ async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
     const data = await res.json();
     
     if (data.ok && data.url) {
-      // Creamos un link invisible que fuerza la pestaña nueva (_blank)
       const link = document.createElement("a");
       link.href = data.url;
       link.setAttribute("target", "_blank"); 
       
-      // En PC le agregamos la instrucción de descarga directa
       if (!esMobile()) {
         link.setAttribute("download", nombreArchivo);
       }
