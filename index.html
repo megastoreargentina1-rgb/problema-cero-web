@@ -285,7 +285,7 @@ FEEDBACK:
   }
 }
 
-// ESTA ES LA NUEVA MAGIA: EL BOTÓN AHORA LEE EL LINK TEMPORAL
+// ESTA ES LA MAGIA: ABRE EL PDF EN UNA PESTAÑA NUEVA
 async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
   const boton = document.getElementById(idBoton);
   const textoOriginal = boton.innerText;
@@ -305,19 +305,20 @@ async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
     const data = await res.json();
     
     if (data.ok && data.url) {
-      if (esMobile()) {
-        // En celular iOS/Android abrimos el link directo (Apple lo permite sin problema)
-        window.location.href = data.url; 
-      } else {
-        // En computadora lo descargamos directo
-        const link = document.createElement("a");
-        link.href = data.url;
+      // Creamos un link invisible que fuerza la pestaña nueva (_blank)
+      const link = document.createElement("a");
+      link.href = data.url;
+      link.setAttribute("target", "_blank"); 
+      
+      // En PC le agregamos la instrucción de descarga directa
+      if (!esMobile()) {
         link.setAttribute("download", nombreArchivo);
-        link.setAttribute("target", "_blank");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
       }
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
     } else {
       throw new Error("El servidor no devolvió una ruta válida.");
     }
