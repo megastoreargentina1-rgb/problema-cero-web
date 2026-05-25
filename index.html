@@ -307,15 +307,22 @@ async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
     const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);
 
-    // Sistema Clásico y Elegante de Descarga por BLOB
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", nombreArchivo);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    setTimeout(() => window.URL.revokeObjectURL(url), 30000);
+    if (esMobile()) {
+      // Solución blindada para celulares:
+      // Redirigimos la pantalla directamente al PDF. Safari y Android lo abren de forma nativa.
+      // Acá abajo aparece el menú elegante de "Compartir / Guardar en Drive / Archivos".
+      // Para volver a la web, el cliente solo tiene que tocar "Atrás".
+      window.location.href = url;
+    } else {
+      // Descarga clásica para PC (baja directo a la carpeta Descargas)
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", nombreArchivo);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => window.URL.revokeObjectURL(url), 30000);
+    }
 
   } catch(error) {
     alert("Hubo un problema al descargar el PDF: " + error.message);
