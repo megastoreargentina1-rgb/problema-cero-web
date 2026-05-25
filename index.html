@@ -298,39 +298,23 @@ async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
         diagnostico: contenido,
-        isMobile: esMobile() // Volvemos a enviar el pulso del dispositivo
+        isMobile: esMobile() 
       })
     });
 
     if (!res.ok) throw new Error("No se pudo conectar con el motor PDF.");
 
     const blob = await res.blob();
-    
-    // MAGIA PREMIUM: Invocando la bandeja nativa en celulares
-    if (esMobile() && navigator.canShare) {
-      const file = new File([blob], nombreArchivo, { type: "application/pdf" });
-      if (navigator.canShare({ files: [file] })) {
-        try {
-          await navigator.share({
-            files: [file],
-            title: titulo,
-            text: 'Aquí tienes tu diagnóstico estratégico.'
-          });
-          return; // Si comparte con éxito, cortamos la ejecución acá
-        } catch (shareError) {
-          console.log("El usuario canceló la ventana de compartir o hubo un error nativo.");
-        }
-      }
-    }
-
-    // FALLBACK PC o si falla la bandeja nativa
     const url = window.URL.createObjectURL(blob);
+
+    // Sistema Clásico y Elegante de Descarga por BLOB
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", nombreArchivo);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    
     setTimeout(() => window.URL.revokeObjectURL(url), 30000);
 
   } catch(error) {
