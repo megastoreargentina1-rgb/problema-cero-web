@@ -18,7 +18,7 @@ body{margin:0;font-family:Arial,sans-serif;background:#020617;color:#e5e7eb;}
 .orange{background:#431407;border:1px solid #f97316;}
 textarea,input{width:100%;box-sizing:border-box;padding:16px;border-radius:12px;border:none;background:#1e293b;color:white;font-size:16px;margin-top:10px;}
 textarea{min-height:150px;resize:vertical;}
-button{width:100%;margin-top:14px;padding:17px;border:none;border-radius:14px;font-size:18px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;-webkit-user-select:none;user-select:none;touch-action:manipulation;}
+button{width:100%;margin-top:14px;padding:17px;border:none;border-radius:14px;font-size:18px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;-webkit-user-select:none;user-select:none;touch-action:manipulation; transition: all 0.3s ease;}
 button:hover{background:#b91c1c;}
 button:disabled{background:#475569;cursor:not-allowed;}
 .cta{background:#f97316;color:#111827;font-weight:900;}
@@ -145,6 +145,21 @@ function esMobile(){
   (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 }
 
+// Resetea los botones si el usuario vuelve a pedir un análisis nuevo
+function resetearBotones() {
+  const btnDiag = document.getElementById("btnDescargarDiagnostico");
+  btnDiag.pdfUrl = null;
+  btnDiag.pdfBlob = null;
+  btnDiag.innerText = "📥 Descargar diagnóstico PDF";
+  btnDiag.style.backgroundColor = ""; 
+
+  const btnAna = document.getElementById("btnDescargarAnalisis");
+  btnAna.pdfUrl = null;
+  btnAna.pdfBlob = null;
+  btnAna.innerText = "📥 Descargar análisis completo PDF";
+  btnAna.style.backgroundColor = "";
+}
+
 async function consultar(){
   const input = document.getElementById("input").value.trim();
 
@@ -153,6 +168,7 @@ async function consultar(){
     return;
   }
 
+  resetearBotones();
   localStorage.setItem("pc_problem", input);
 
   const resultado = document.getElementById("resultado");
@@ -168,11 +184,7 @@ async function consultar(){
     const res = await fetch(API_URL,{
       method:"POST",
       headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({
-        problem:input,
-        consultaOriginal:input,
-        userId:getUserId()
-      })
+      body:JSON.stringify({ problem:input, consultaOriginal:input, userId:getUserId() })
     });
 
     const data = await res.json();
@@ -183,7 +195,6 @@ async function consultar(){
     }
 
     resultado.innerText = data.diagnostico || "No se pudo generar diagnóstico.";
-
     ctaRapido.style.display = "block";
     btnDescargarDiagnostico.style.display = "block";
 
@@ -205,17 +216,14 @@ function mostrarFeedback(){
     alert("Respondé las 3 preguntas.");
     return;
   }
-
   document.getElementById("feedback").style.display = "block";
 }
 
 async function generarAnalisisCompleto(){
   const problemaOriginal = localStorage.getItem("pc_problem") || "";
-
   const p1 = document.getElementById("p1").value.trim();
   const p2 = document.getElementById("p2").value.trim();
   const p3 = document.getElementById("p3").value.trim();
-
   const f1 = document.getElementById("f1").value.trim();
   const f2 = document.getElementById("f2").value.trim();
   const f3 = document.getElementById("f3").value.trim();
@@ -225,26 +233,7 @@ async function generarAnalisisCompleto(){
     return;
   }
 
-  const pedidoCompleto = `
-ANÁLISIS COMPLETO
-
-CASO ORIGINAL:
-${problemaOriginal}
-
-RESPUESTAS:
-1. ${p1}
-
-2. ${p2}
-
-3. ${p3}
-
-FEEDBACK:
-1. ${f1}
-
-2. ${f2}
-
-3. ${f3}
-`;
+  const pedidoCompleto = `ANÁLISIS COMPLETO\n\nCASO ORIGINAL:\n${problemaOriginal}\n\nRESPUESTAS:\n1. ${p1}\n2. ${p2}\n3. ${p3}\n\nFEEDBACK:\n1. ${f1}\n2. ${f2}\n3. ${f3}`;
 
   const analisis = document.getElementById("analisisCompleto");
   const btnDescargarAnalisis = document.getElementById("btnDescargarAnalisis");
@@ -260,12 +249,8 @@ FEEDBACK:
       body:JSON.stringify({
         problem:pedidoCompleto,
         consultaOriginal:problemaOriginal,
-        respuesta1:p1,
-        respuesta2:p2,
-        respuesta3:p3,
-        feedback1:f1,
-        feedback2:f2,
-        feedback3:f3,
+        respuesta1:p1, respuesta2:p2, respuesta3:p3,
+        feedback1:f1, feedback2:f2, feedback3:f3,
         userId:getUserId()
       })
     });
@@ -285,10 +270,40 @@ FEEDBACK:
   }
 }
 
+// SISTEMA BLINDADO EN 2 PASOS PARA BURLAR EL CRONÓMETRO DE SAFARI
 async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
   const boton = document.getElementById(idBoton);
-  const textoOriginal = boton.innerText;
 
+  // PASO 2: Si el PDF ya está listo en memoria, el toque es instantáneo y muestra la bandeja nativa
+  if (boton.pdfUrl) {
+    try {
+      let useShare = false;
+      let fileToShare = null;
+      if (navigator.share) {
+          fileToShare = new File([boton.pdfBlob], nombreArchivo, { type: "application/pdf" });
+          if (navigator.canShare && navigator.canShare({ files: [fileToShare] })) {
+              useShare = true;
+          }
+      }
+      
+      if (useShare) {
+          await navigator.share({ files: [fileToShare], title: titulo });
+      } else {
+          const link = document.createElement("a");
+          link.href = boton.pdfUrl;
+          link.download = nombreArchivo;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+      }
+    } catch(e) { 
+      console.log("Acción nativa cancelada por el usuario o navegador:", e); 
+    }
+    return; // Terminamos acá
+  }
+
+  // PASO 1: Mandar a fabricar el PDF al servidor
+  const textoOriginal = boton.innerText;
   boton.innerText = "⏳ Preparando documento...";
   boton.disabled = true;
 
@@ -296,37 +311,21 @@ async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
     const res = await fetch(PDF_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        diagnostico: contenido,
-        isMobile: esMobile() 
-      })
+      body: JSON.stringify({ diagnostico: contenido, isMobile: esMobile() })
     });
 
     if (!res.ok) throw new Error("No se pudo conectar con el motor PDF.");
 
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
+    boton.pdfBlob = await res.blob();
+    boton.pdfUrl = window.URL.createObjectURL(boton.pdfBlob);
 
-    if (esMobile()) {
-      // Solución blindada para celulares:
-      // Redirigimos la pantalla directamente al PDF. Safari y Android lo abren de forma nativa.
-      // Acá abajo aparece el menú elegante de "Compartir / Guardar en Drive / Archivos".
-      // Para volver a la web, el cliente solo tiene que tocar "Atrás".
-      window.location.href = url;
-    } else {
-      // Descarga clásica para PC (baja directo a la carpeta Descargas)
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", nombreArchivo);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(() => window.URL.revokeObjectURL(url), 30000);
-    }
+    // Éxito: Cambiamos el botón a color premium indicando que ya está listo para guardar
+    boton.innerText = "✅ PDF Listo. Tocá para Guardar";
+    boton.style.backgroundColor = "#16a34a"; // Verde fuerte corporativo
+    boton.disabled = false;
 
   } catch(error) {
-    alert("Hubo un problema al descargar el PDF: " + error.message);
-  } finally {
+    alert("Hubo un problema al preparar el PDF: " + error.message);
     boton.innerText = textoOriginal;
     boton.disabled = false;
   }
@@ -340,15 +339,8 @@ async function descargarDiagnosticoPDF(){
     alert("Todavía no hay diagnóstico para descargar.");
     return;
   }
-
   const contenido = `CONSULTA ORIGINAL:\n${consulta}\n\nDIAGNÓSTICO:\n${diagnostico}`;
-
-  await descargarPDFBackend(
-    "Diagnóstico estratégico",
-    contenido,
-    "Diagnostico_ProblemaCero.pdf",
-    "btnDescargarDiagnostico"
-  );
+  await descargarPDFBackend("Diagnóstico estratégico", contenido, "Diagnostico_ProblemaCero.pdf", "btnDescargarDiagnostico");
 }
 
 async function descargarAnalisisPDF(){
@@ -360,15 +352,8 @@ async function descargarAnalisisPDF(){
     alert("Todavía no hay análisis completo para descargar.");
     return;
   }
-
   const contenido = `CONSULTA ORIGINAL:\n${consulta}\n\nDIAGNÓSTICO INICIAL:\n${diagnostico}\n\nANÁLISIS COMPLETO:\n${analisis}`;
-
-  await descargarPDFBackend(
-    "Análisis estratégico completo",
-    contenido,
-    "Informe_Completo_ProblemaCero.pdf",
-    "btnDescargarAnalisis"
-  );
+  await descargarPDFBackend("Análisis estratégico completo", contenido, "Informe_Completo_ProblemaCero.pdf", "btnDescargarAnalisis");
 }
 </script>
 
