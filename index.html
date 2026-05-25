@@ -140,11 +140,6 @@ function getUserId(){
   return id;
 }
 
-function esMobile(){
-  return /iPad|iPhone|iPod|Android/i.test(navigator.userAgent) ||
-  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-}
-
 async function consultar(){
   const input = document.getElementById("input").value.trim();
 
@@ -296,37 +291,30 @@ async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
     const res = await fetch(PDF_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      // ACA ESTA LA MAGIA: Le avisamos al backend si estamos en celular o no
+      // Modificado: Ahora le pasamos la variable correcta "diagnostico" que el nuevo servidor espera
       body: JSON.stringify({ 
-        titulo: titulo, 
-        contenido: contenido,
-        isMobile: esMobile() 
+        diagnostico: contenido 
       })
     });
 
-    if (!res.ok) throw new Error("No se pudo conectar con el servidor de informes.");
+    if (!res.ok) throw new Error("No se pudo conectar con el motor PDF.");
 
-    const data = await res.json();
+    // Modificado: Recepción directa del archivo físico (Blob) en lugar de un JSON.
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", nombreArchivo);
     
-    if (data.ok && data.url) {
-      const link = document.createElement("a");
-      link.href = data.url;
-      link.setAttribute("target", "_blank"); 
-      
-      if (!esMobile()) {
-        link.setAttribute("download", nombreArchivo);
-      }
-      
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-    } else {
-      throw new Error("El servidor no devolvió una ruta válida.");
-    }
+    document.body.appendChild(link);
+    link.click();
+    
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
 
   } catch(error) {
-    alert("Hubo un problema al generar el PDF: " + error.message);
+    alert("Hubo un problema al descargar el PDF: " + error.message);
   } finally {
     boton.innerText = textoOriginal;
     boton.disabled = false;
