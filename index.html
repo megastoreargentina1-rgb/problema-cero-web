@@ -140,6 +140,11 @@ function getUserId(){
   return id;
 }
 
+function esMobile(){
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
 async function consultar(){
   const input = document.getElementById("input").value.trim();
 
@@ -291,27 +296,42 @@ async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
     const res = await fetch(PDF_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      // Modificado: Ahora le pasamos la variable correcta "diagnostico" que el nuevo servidor espera
       body: JSON.stringify({ 
-        diagnostico: contenido 
+        diagnostico: contenido,
+        isMobile: esMobile() // Volvemos a enviar el pulso del dispositivo
       })
     });
 
     if (!res.ok) throw new Error("No se pudo conectar con el motor PDF.");
 
-    // Modificado: Recepción directa del archivo físico (Blob) en lugar de un JSON.
     const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
+    
+    // MAGIA PREMIUM: Invocando la bandeja nativa en celulares
+    if (esMobile() && navigator.canShare) {
+      const file = new File([blob], nombreArchivo, { type: "application/pdf" });
+      if (navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: titulo,
+            text: 'Aquí tienes tu diagnóstico estratégico.'
+          });
+          return; // Si comparte con éxito, cortamos la ejecución acá
+        } catch (shareError) {
+          console.log("El usuario canceló la ventana de compartir o hubo un error nativo.");
+        }
+      }
+    }
 
+    // FALLBACK PC o si falla la bandeja nativa
+    const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", nombreArchivo);
-    
     document.body.appendChild(link);
     link.click();
-    
     document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
+    setTimeout(() => window.URL.revokeObjectURL(url), 30000);
 
   } catch(error) {
     alert("Hubo un problema al descargar el PDF: " + error.message);
