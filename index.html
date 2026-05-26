@@ -1,225 +1,221 @@
-const express = require("express");
-const cors = require("cors");
-const puppeteer = require("puppeteer");
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Problema Cero</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#020617;color:#e5e7eb;}
+.container{max-width:880px;margin:auto;padding:28px 18px 50px;}
+.header{text-align:center;margin-bottom:24px;}
+.header h1{font-size:38px;margin-bottom:8px;}
+.header p{font-size:18px;color:#cbd5e1;line-height:1.5;}
+.block{background:#111827;padding:22px;border-radius:16px;margin-top:20px;border:1px solid #1f2937;line-height:1.6;}
+.gold{background:#422006;border:1px solid #f59e0b;}
+.blue{background:#0f172a;border:1px solid #38bdf8;}
+.purple{background:#1e1b4b;border:1px solid #818cf8;}
+.orange{background:#431407;border:1px solid #f97316;}
+textarea,input{width:100%;box-sizing:border-box;padding:16px;border-radius:12px;border:none;background:#1e293b;color:white;font-size:16px;margin-top:10px;}
+textarea{min-height:150px;resize:vertical;}
+button{width:100%;margin-top:14px;padding:17px;border:none;border-radius:14px;font-size:18px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;-webkit-user-select:none;user-select:none;touch-action:manipulation; transition: all 0.3s ease;}
+button:hover{background:#b91c1c;}
+button:disabled{background:#475569;cursor:not-allowed;}
+.cta{background:#f97316;color:#111827;font-weight:900;}
+.download{background:#2563eb;}
+.download-green{background:#16a34a;}
+#resultado,#analisisCompleto{display:none;white-space:pre-line;line-height:1.65;}
+ul{line-height:1.8;padding-left:22px;}
+.video-box{background:#000;border-radius:16px;padding:14px;margin-top:20px;text-align:center;border:1px solid #334155;}
+.small{color:#94a3b8;font-size:14px;line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>PROBLEMA CERO</h1>
+<p>Tu negocio no tiene un problema de ventas.<br>Tiene un problema que no estás viendo.</p>
+</div>
+<div class="video-box">
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/iW1JsUqeS_o" title="Problema Cero" frameborder="0" allowfullscreen style="border-radius:14px;"></iframe>
+</div>
+<div class="block">
+<h3>👋 Soy Hernán</h3>
+<p>Creé Problema Cero para ayudar a emprendedores y negocios a detectar con claridad qué está fallando antes de seguir invirtiendo tiempo, energía o publicidad en soluciones equivocadas.</p>
+</div>
+<div class="block gold">
+<h3>⚠️ Antes de seguir</h3>
+<p>Esto no es un test genérico. No es una respuesta al azar. Es un diagnóstico directo sobre tu caso para mostrarte qué puede estar frenando tu negocio hoy.</p>
+</div>
+<div class="block blue">
+<h3>🧠 Cómo usarlo bien</h3>
+<p>No escribas solo “vendo poco”. Contá:</p>
+<ul><li>qué vendés</li><li>a quién</li><li>qué intentaste</li><li>dónde publicás</li><li>qué resultado tenés</li><li>y qué sentís que no está funcionando</li></ul>
+</div>
 
-const app = express();
-app.use(cors());
-app.use(express.json({ limit: "50mb" }));
+<textarea id="input" placeholder="Contá tu problema con el mayor detalle posible..."></textarea>
+<button onclick="consultar()">🔍 Analizar mi negocio</button>
+<div id="resultado" class="block"></div>
+<button id="btnDescargarDiagnostico" class="download" style="display:none;" onclick="descargarDiagnosticoPDF()">📥 Descargar diagnóstico PDF</button>
 
-app.get("/", (req, res) => {
-  res.send("Motor PDF Problema Cero: Tipografía Premium A4 Activa");
-});
+<div id="ctaRapido" class="block orange" style="display:none;">
+<h3>🚀 Etapa privada de validación</h3>
+<p>Actualmente Problema Cero abrió una etapa privada de validación con negocios reales para seguir mejorando el sistema.</p>
+<button class="cta" onclick="mostrarPreguntas()">🚀 SOLICITAR ACCESO AL ANÁLISIS COMPLETO</button>
+</div>
 
-function limpiarTexto(texto) {
-  if (!texto) return "";
-  return texto.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+<div id="preguntas" class="block" style="display:none;">
+<h3>🧠 Para darte el análisis completo necesito 3 respuestas</h3>
+<p><strong>¿Qué intentaste hasta ahora para resolver este problema?</strong></p>
+<textarea id="p1"></textarea>
+<p><strong>¿Dónde sentís hoy que está el verdadero problema?</strong></p>
+<textarea id="p2"></textarea>
+<p><strong>¿Hoy tenés más tiempo o más dinero para resolverlo?</strong></p>
+<textarea id="p3"></textarea>
+<button onclick="mostrarFeedback()">Continuar</button>
+</div>
+
+<div id="feedback" class="block purple" style="display:none;">
+<h3>🔎 Feedback breve</h3>
+<p><strong>¿El diagnóstico inicial te mostró algo que no estabas viendo?</strong></p>
+<textarea id="f1"></textarea>
+<p><strong>¿Qué parte te resultó más útil o más precisa?</strong></p>
+<textarea id="f2"></textarea>
+<p><strong>Del 1 al 10, ¿qué tan claro te resultó el diagnóstico?</strong></p>
+<textarea id="f3"></textarea>
+<button class="cta" onclick="generarAnalisisCompleto()">🚀 DESBLOQUEAR ANÁLISIS COMPLETO</button>
+</div>
+
+<div id="analisisCompleto" class="block"></div>
+<button id="btnDescargarAnalisis" class="download-green" style="display:none;" onclick="descargarAnalisisPDF()">📥 Descargar análisis completo PDF</button>
+
+<p class="small">El resultado depende de la información que cargues y de la ejecución posterior. Problema Cero no promete resultados mágicos.</p>
+</div>
+
+<script>
+const API_URL = "https://problema-cero-api.onrender.com/api/diagnostico";
+const PDF_API_URL = "https://problema-cero-pdf-production.up.railway.app/generar-pdf";
+
+function getUserId(){
+  let id = localStorage.getItem("pc_user_id");
+  if(!id){ id = "user_" + Math.random().toString(36).slice(2); localStorage.setItem("pc_user_id", id); }
+  return id;
 }
 
-function procesarMarkdownAHTML(textoCrudo) {
-  const textoSeguro = limpiarTexto(textoCrudo);
-  const lineas = textoSeguro.split('\n');
-  let htmlResult = '';
-  let enLista = false;
-  let enCajaCierre = false;
-
-  lineas.forEach(linea => {
-    let limpia = linea.trim();
-    if (!limpia) return;
-
-    if (limpia.includes("━━━━━━━━━━━━━━━━━━━━")) {
-      if (enLista) { htmlResult += '</ul>'; enLista = false; }
-      htmlResult += '<div class="page-break"></div>';
-      return;
-    }
-
-    if (limpia.includes("ESTE DIAGNÓSTICO ES SOLO EL PRIMER NIVEL")) {
-      if (enLista) { htmlResult += '</ul>'; enLista = false; }
-      enCajaCierre = true;
-      htmlResult += `<div class="caja-premium-cierre">`;
-      htmlResult += `<h2 class="cierre-titulo">${limpia}</h2>`;
-      return;
-    }
-
-    const matchTitulo = limpia.match(/^(⚡|🔴|🧠|⚠️|🚀|💰|🔥|🧭|🎯|🛑|🔧|📅|📆|📌|💬|📊)\s(.*)$/);
-    if (matchTitulo) {
-      if (enLista) { htmlResult += '</ul>'; enLista = false; }
-      const textoTitulo = matchTitulo[2];
-      htmlResult += `<h2 class="section-title">${textoTitulo}</h2>`;
-      return;
-    }
-
-    if (limpia.startsWith('- ')) {
-      if (!enLista) { 
-        htmlResult += enCajaCierre ? '<ul class="cierre-list">' : '<ul class="premium-list">'; 
-        enLista = true; 
-      }
-      let itemTexto = limpia.substring(2);
-      itemTexto = itemTexto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      htmlResult += `<li class="list-item">${itemTexto}</li>`;
-      return;
-    } else if (enLista) {
-      htmlResult += '</ul>';
-      enLista = false;
-    }
-
-    if (!limpia.startsWith('<')) {
-      let parrafo = limpia.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      htmlResult += `<p>${parrafo}</p>`;
-    }
-  });
-
-  if (enLista) htmlResult += '</ul>';
-  if (enCajaCierre) htmlResult += '</div>';
-  return htmlResult;
+function resetearBotones() {
+  const btnDiag = document.getElementById("btnDescargarDiagnostico");
+  btnDiag.pdfBlob = null; btnDiag.innerText = "📥 Descargar diagnóstico PDF"; btnDiag.style.backgroundColor = ""; 
+  const btnAna = document.getElementById("btnDescargarAnalisis");
+  btnAna.pdfBlob = null; btnAna.innerText = "📥 Descargar análisis completo PDF"; btnAna.style.backgroundColor = "";
 }
 
-function generarPlantillaPDF(textoDiagnostico) {
-  const contenidoHTML = procesarMarkdownAHTML(textoDiagnostico);
+async function consultar(){
+  const input = document.getElementById("input").value.trim();
+  if(!input){ alert("Escribí tu problema"); return; }
+  resetearBotones();
+  localStorage.setItem("pc_problem", input);
   
-  // Tañamos masivos forzados para formato A4 físico
-  const fontSize = "19px"; 
-  const lineHeight = "1.7";
-  const titleSize = "26px";
-  const bulletSize = "30px";
-  
-  const opcionesFecha = { year: 'numeric', month: 'long', day: 'numeric' };
-  const fechaHoy = new Date().toLocaleDateString('es-AR', opcionesFecha);
+  const resultado = document.getElementById("resultado");
+  const btnDescargarDiagnostico = document.getElementById("btnDescargarDiagnostico");
+  const ctaRapido = document.getElementById("ctaRapido");
 
-  return `
-  <!DOCTYPE html>
-  <html>
-  <head>
-    <meta charset="utf-8">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-      :root {
-        --rojo-marca: #dc2626;
-        --texto-principal: #111827;
-      }
-      body {
-        font-family: 'Inter', sans-serif;
-        color: var(--texto-principal);
-        background-color: #ffffff;
-        line-height: ${lineHeight}; 
-        font-size: ${fontSize};
-        margin: 0;
-        padding: 0;
-      }
-      .page-content { padding: 60px 80px; }
-      .page-break { page-break-before: always; height: 1px; }
-      
-      .cover {
-         height: 100vh; display: flex; flex-direction: column; justify-content: center;
-         align-items: center; text-align: center; 
-         background-color: #000000; 
-         color: #ffffff; padding: 0 80px; box-sizing: border-box;
-         position: relative;
-      }
-      .logo-portada { 
-         width: 280px; 
-         margin-bottom: 50px; 
-      }
-      .cover h1 { font-size: 54px; color: var(--rojo-marca); margin-top: 0; margin-bottom: 20px; letter-spacing: 3px; }
-      .cover .subtitle { font-size: 26px; font-weight: 400; margin-bottom: 10px; color: #d1d5db; }
-      .cover .private { font-size: 18px; font-weight: 700; margin-bottom: 50px; color: #9ca3af; letter-spacing: 4px; text-transform: uppercase; }
-      
-      .cover .diag-title { font-size: 60px; font-weight: 700; margin-bottom: 40px; line-height: 1.1; }
-      
-      .cover .description { 
-        font-size: 22px; color: #9ca3af; max-width: 700px; 
-        border-top: 2px solid var(--rojo-marca); 
-        border-bottom: 2px solid var(--rojo-marca); 
-        padding: 24px 0; margin: 0 auto; line-height: 1.6;
-        margin-bottom: 150px; /* Margen de seguridad masivo para evitar superposición */
-      }
-      
-      .cover-footer { position: absolute; bottom: 60px; left: 0; right: 0; text-align: center; }
-      .cover-footer .label { font-size: 16px; color: #6b7280; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
-      .cover-footer .value { font-size: 20px; color: #ffffff; margin-bottom: 24px; font-weight: 600; }
-      
-      .section-title { font-size: ${titleSize}; color: var(--rojo-marca); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-top: 0; margin-bottom: 24px; border-bottom: 1px solid #e5e7eb; padding-bottom: 12px; }
-      p { margin-top: 0; margin-bottom: 24px; text-align: left; color: #1f2937; font-weight: 400; }
-      strong { font-weight: 700; color: #000000; }
-      
-      .premium-list { list-style: none; padding-left: 0; margin-top: 15px; margin-bottom: 24px; }
-      .list-item { position: relative; padding-left: 32px; margin-bottom: 18px; color: #1f2937; }
-      .premium-list .list-item::before { content: "•"; color: var(--rojo-marca); font-weight: bold; font-size: ${bulletSize}; position: absolute; left: 0; top: -6px; }
+  resultado.style.display = "block"; resultado.innerText = "Analizando tu negocio...";
+  btnDescargarDiagnostico.style.display = "none"; ctaRapido.style.display = "none";
 
-      .caja-premium-cierre {
-        background-color: #0a0a0a;
-        color: #ffffff;
-        border-left: 6px solid var(--rojo-marca);
-        padding: 40px;
-        margin-top: 50px;
-        border-radius: 12px;
-        page-break-inside: avoid;
-      }
-      .caja-premium-cierre .cierre-titulo { color: var(--rojo-marca); font-size: ${titleSize}; margin-top: 0; margin-bottom: 20px; text-transform: uppercase; }
-      .caja-premium-cierre p { color: #e5e7eb; }
-      .caja-premium-cierre strong { color: #ffffff; }
-      .cierre-list { list-style: none; padding-left: 0; margin-top: 15px; margin-bottom: 24px; }
-      .cierre-list .list-item { position: relative; padding-left: 32px; margin-bottom: 18px; color: #e5e7eb; }
-      .cierre-list .list-item::before { content: "•"; color: var(--rojo-marca); font-weight: bold; font-size: ${bulletSize}; position: absolute; left: 0; top: -6px; }
-    </style>
-  </head>
-  <body>
-    <div class="cover">
-      <img src="https://www.problemacero.com.ar/logo.png" alt="Logo Problema Cero" class="logo-portada" onerror="this.style.display='none'">
-      
-      <h1>PROBLEMA CERO</h1>
-      <div class="subtitle">Interconsulta estratégica empresarial</div>
-      <div class="private">Informe Privado</div>
-      
-      <div class="diag-title">Diagnóstico<br>estratégico</div>
-      
-      <div class="description">
-        Una lectura estratégica diseñada para detectar el bloqueo principal, ordenar prioridades y transformar confusión en dirección concreta.
-      </div>
-
-      <div class="cover-footer">
-        <div class="label">Fecha de emisión</div>
-        <div class="value">${fechaHoy}</div>
-        <div class="label">Dirección Estratégica</div>
-        <div class="value">Lic. Hernán Mariano Waisman</div>
-      </div>
-    </div>
-    <div class="page-break"></div>
-
-    <div class="page-content">
-      ${contenidoHTML}
-    </div>
-  </body>
-  </html>
-  `;
+  try{
+    const res = await fetch(API_URL,{ method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify({ problem:input, consultaOriginal:input, userId:getUserId() }) });
+    const data = await res.json();
+    if(!res.ok){ resultado.innerText = "Error: " + (data.detalle || data.error); return; }
+    resultado.innerText = data.diagnostico || "No se pudo generar diagnóstico.";
+    ctaRapido.style.display = "block"; btnDescargarDiagnostico.style.display = "block";
+  }catch(error){ resultado.innerText = "Error: " + error.message; }
 }
 
-app.post("/*", async (req, res) => {
-  let browser = null;
-  try {
-    const diagnostico = req.body.diagnostico || req.body.texto || req.body.problem;
-    if (!diagnostico) return res.status(400).json({ error: "No se envió texto para el PDF" });
+function mostrarPreguntas(){ document.getElementById("preguntas").style.display = "block"; }
 
-    const htmlFinal = generarPlantillaPDF(diagnostico);
+function mostrarFeedback(){
+  if(!document.getElementById("p1").value.trim() || !document.getElementById("p2").value.trim() || !document.getElementById("p3").value.trim()){ alert("Respondé las 3 preguntas."); return; }
+  document.getElementById("feedback").style.display = "block";
+}
 
-    browser = await puppeteer.launch({ headless: "new", args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"] });
-    const page = await browser.newPage();
-    await page.setContent(htmlFinal, { waitUntil: "networkidle0" });
+async function generarAnalisisCompleto(){
+  const f1 = document.getElementById("f1").value.trim(), f2 = document.getElementById("f2").value.trim(), f3 = document.getElementById("f3").value.trim();
+  if(!f1 || !f2 || !f3){ alert("Completá el feedback."); return; }
+  
+  const pedidoCompleto = `ANÁLISIS COMPLETO\n\nCASO ORIGINAL:\n${localStorage.getItem("pc_problem")}\n\nRESPUESTAS:\n1. ${document.getElementById("p1").value}\n2. ${document.getElementById("p2").value}\n3. ${document.getElementById("p3").value}\n\nFEEDBACK:\n1. ${f1}\n2. ${f2}\n3. ${f3}`;
+  
+  const analisis = document.getElementById("analisisCompleto");
+  const btnDescargarAnalisis = document.getElementById("btnDescargarAnalisis");
 
-    const pdfBuffer = await page.pdf({
-      format: "A4", printBackground: true, margin: { top: "50px", bottom: "60px", left: "0px", right: "0px" },
-      displayHeaderFooter: true, headerTemplate: "<div></div>",
-      footerTemplate: `<div style="width: 100%; font-size: 11px; padding: 0 80px; display: flex; justify-content: space-between; color: #6b7280; font-family: 'Helvetica Neue', sans-serif;"><span>Problema Cero Dirección Estratégica</span><span>Página <span class="pageNumber"></span></span></div>`
-    });
-    
-    res.set({ "Content-Type": "application/pdf", "Content-Disposition": "attachment; filename=Diagnostico_ProblemaCero.pdf", "Content-Length": pdfBuffer.length });
-    res.send(pdfBuffer);
-  } catch (error) {
-    console.error("❌ Error:", error);
-    res.status(500).json({ error: "Falla interna", detalle: error.message });
-  } finally {
-    if (browser) await browser.close();
+  analisis.style.display = "block"; btnDescargarAnalisis.style.display = "none"; analisis.innerText = "Generando análisis completo...";
+
+  try{
+    const res = await fetch(API_URL,{ method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify({ problem:pedidoCompleto, userId:getUserId() }) });
+    const data = await res.json();
+    if(!res.ok){ analisis.innerText = "Error: " + (data.detalle || data.error); return; }
+    analisis.innerText = data.diagnostico || "No se pudo generar análisis.";
+    btnDescargarAnalisis.style.display = "block";
+  }catch(error){ analisis.innerText = "Error: " + error.message; }
+}
+
+function abrirOCompartir(blob, nombreArchivo, titulo) {
+  if (navigator.canShare) {
+    const file = new File([blob], nombreArchivo, { type: 'application/pdf' });
+    if (navigator.canShare({ files: [file] })) {
+      navigator.share({
+        files: [file],
+        title: titulo
+      }).catch(err => console.log("Operación cancelada", err));
+      return;
+    }
   }
-});
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nombreArchivo;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+}
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Motor PDF Problema Cero: Tipografía A4 activa en puerto ${PORT}`));
+async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
+  const boton = document.getElementById(idBoton);
+
+  if (boton.pdfBlob) {
+    abrirOCompartir(boton.pdfBlob, nombreArchivo, titulo);
+    return;
+  }
+
+  const textoOriginal = boton.innerText;
+  boton.innerText = "⏳ Preparando documento...";
+  boton.disabled = true;
+
+  try {
+    const res = await fetch(PDF_API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ diagnostico: contenido }) });
+    if (!res.ok) throw new Error("No se pudo conectar con el motor PDF.");
+
+    const blob = await res.blob();
+    boton.pdfBlob = blob; 
+
+    boton.innerText = "✅ PDF Listo. Tocá para Ver";
+    boton.style.backgroundColor = "#16a34a";
+    boton.disabled = false;
+  } catch(error) {
+    alert("Error: " + error.message);
+    boton.innerText = textoOriginal;
+    boton.disabled = false;
+  }
+}
+
+async function descargarDiagnosticoPDF(){
+  const contenido = `CONSULTA ORIGINAL:\n${localStorage.getItem("pc_problem")}\n\nDIAGNÓSTICO:\n${document.getElementById("resultado").innerText}`;
+  await descargarPDFBackend("Diagnóstico", contenido, "Diagnostico_ProblemaCero.pdf", "btnDescargarDiagnostico");
+}
+
+async function descargarAnalisisPDF(){
+  const contenido = `CONSULTA ORIGINAL:\n${localStorage.getItem("pc_problem")}\n\nDIAGNÓSTICO INICIAL:\n${document.getElementById("resultado").innerText}\n\nANÁLISIS COMPLETO:\n${document.getElementById("analisisCompleto").innerText}`;
+  await descargarPDFBackend("Análisis", contenido, "Informe_ProblemaCero.pdf", "btnDescargarAnalisis");
+}
+</script>
+</body>
+</html>
