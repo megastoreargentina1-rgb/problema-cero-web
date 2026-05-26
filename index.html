@@ -103,9 +103,9 @@ function getUserId(){
 
 function resetearBotones() {
   const btnDiag = document.getElementById("btnDescargarDiagnostico");
-  btnDiag.pdfUrl = null; btnDiag.innerText = "📥 Descargar diagnóstico PDF"; btnDiag.style.backgroundColor = ""; 
+  btnDiag.pdfBlob = null; btnDiag.innerText = "📥 Descargar diagnóstico PDF"; btnDiag.style.backgroundColor = ""; 
   const btnAna = document.getElementById("btnDescargarAnalisis");
-  btnAna.pdfUrl = null; btnAna.innerText = "📥 Descargar análisis completo PDF"; btnAna.style.backgroundColor = "";
+  btnAna.pdfBlob = null; btnAna.innerText = "📥 Descargar análisis completo PDF"; btnAna.style.backgroundColor = "";
 }
 
 async function consultar(){
@@ -157,17 +157,35 @@ async function generarAnalisisCompleto(){
   }catch(error){ analisis.innerText = "Error: " + error.message; }
 }
 
+function abrirOCompartir(blob, nombreArchivo, titulo) {
+  // Lógica Premium: Invocar el menú nativo de Apple / Android
+  if (navigator.canShare) {
+    const file = new File([blob], nombreArchivo, { type: 'application/pdf' });
+    if (navigator.canShare({ files: [file] })) {
+      navigator.share({
+        files: [file],
+        title: titulo
+      }).catch(err => console.log("Operación cancelada", err));
+      return;
+    }
+  }
+  // Respaldo por si están en PC de escritorio
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nombreArchivo;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+}
+
 async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
   const boton = document.getElementById(idBoton);
 
-  // Lógica bancaria para todas las pantallas
-  if (boton.pdfUrl) {
-    const a = document.createElement("a");
-    a.href = boton.pdfUrl;
-    a.target = "_blank"; // Esto fuerza al iPhone a abrir el visor de PDF
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  // Si ya lo tenemos fabricado, abrimos el menú nativo
+  if (boton.pdfBlob) {
+    abrirOCompartir(boton.pdfBlob, nombreArchivo, titulo);
     return;
   }
 
@@ -180,7 +198,7 @@ async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
     if (!res.ok) throw new Error("No se pudo conectar con el motor PDF.");
 
     const blob = await res.blob();
-    boton.pdfUrl = window.URL.createObjectURL(blob);
+    boton.pdfBlob = blob; // Guardamos el archivo físico real en la memoria
 
     boton.innerText = "✅ PDF Listo. Tocá para Ver";
     boton.style.backgroundColor = "#16a34a";
