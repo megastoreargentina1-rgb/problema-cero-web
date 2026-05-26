@@ -157,13 +157,12 @@ async function generarAnalisisCompleto(){
   }catch(error){ analisis.innerText = "Error: " + error.message; }
 }
 
-function abrirOCompartir(blob, nombreArchivo, titulo) {
+function abrirOCompartir(blob, nombreArchivo) {
   if (navigator.canShare) {
     const file = new File([blob], nombreArchivo, { type: 'application/pdf' });
     if (navigator.canShare({ files: [file] })) {
       navigator.share({
-        files: [file],
-        title: titulo
+        files: [file]
       }).catch(err => console.log("Operación cancelada", err));
       return;
     }
@@ -182,7 +181,7 @@ async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
   const boton = document.getElementById(idBoton);
 
   if (boton.pdfBlob) {
-    abrirOCompartir(boton.pdfBlob, nombreArchivo, titulo);
+    abrirOCompartir(boton.pdfBlob, nombreArchivo);
     return;
   }
 
