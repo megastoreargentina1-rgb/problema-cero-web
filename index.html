@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Problema Cero</title>
-
 <style>
 body{margin:0;font-family:Arial,sans-serif;background:#020617;color:#e5e7eb;}
 .container{max-width:880px;margin:auto;padding:28px 18px 50px;}
@@ -30,101 +29,66 @@ ul{line-height:1.8;padding-left:22px;}
 .small{color:#94a3b8;font-size:14px;line-height:1.5;}
 </style>
 </head>
-
 <body>
 <div class="container">
-
 <div class="header">
 <h1>PROBLEMA CERO</h1>
 <p>Tu negocio no tiene un problema de ventas.<br>Tiene un problema que no estás viendo.</p>
 </div>
-
 <div class="video-box">
-<iframe width="100%" height="400"
-src="https://www.youtube.com/embed/iW1JsUqeS_o"
-title="Problema Cero" frameborder="0" allowfullscreen style="border-radius:14px;">
-</iframe>
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/iW1JsUqeS_o" title="Problema Cero" frameborder="0" allowfullscreen style="border-radius:14px;"></iframe>
 </div>
-
 <div class="block">
 <h3>👋 Soy Hernán</h3>
 <p>Creé Problema Cero para ayudar a emprendedores y negocios a detectar con claridad qué está fallando antes de seguir invirtiendo tiempo, energía o publicidad en soluciones equivocadas.</p>
-<p>Muchas veces el problema no es que falten ganas, esfuerzo o constancia. El problema es que el negocio está trabajando sobre una base que no convierte.</p>
 </div>
-
 <div class="block gold">
 <h3>⚠️ Antes de seguir</h3>
 <p>Esto no es un test genérico. No es una respuesta al azar. Es un diagnóstico directo sobre tu caso para mostrarte qué puede estar frenando tu negocio hoy.</p>
-<p>Cuanto más claro expliques tu situación, más útil va a ser el análisis.</p>
 </div>
-
 <div class="block blue">
 <h3>🧠 Cómo usarlo bien</h3>
 <p>No escribas solo “vendo poco”. Contá:</p>
-<ul>
-<li>qué vendés</li>
-<li>a quién</li>
-<li>qué intentaste</li>
-<li>dónde publicás</li>
-<li>qué resultado tenés</li>
-<li>y qué sentís que no está funcionando</li>
-</ul>
+<ul><li>qué vendés</li><li>a quién</li><li>qué intentaste</li><li>dónde publicás</li><li>qué resultado tenés</li><li>y qué sentís que no está funcionando</li></ul>
 </div>
 
 <textarea id="input" placeholder="Contá tu problema con el mayor detalle posible..."></textarea>
-
 <button onclick="consultar()">🔍 Analizar mi negocio</button>
-
 <div id="resultado" class="block"></div>
-
 <button id="btnDescargarDiagnostico" class="download" style="display:none;" onclick="descargarDiagnosticoPDF()">📥 Descargar diagnóstico PDF</button>
 
 <div id="ctaRapido" class="block orange" style="display:none;">
 <h3>🚀 Etapa privada de validación</h3>
 <p>Actualmente Problema Cero abrió una etapa privada de validación con negocios reales para seguir mejorando el sistema.</p>
-<p>Durante esta etapa, podés solicitar acceso al análisis completo sin pasar por pago.</p>
 <button class="cta" onclick="mostrarPreguntas()">🚀 SOLICITAR ACCESO AL ANÁLISIS COMPLETO</button>
 </div>
 
 <div id="preguntas" class="block" style="display:none;">
 <h3>🧠 Para darte el análisis completo necesito 3 respuestas</h3>
-
 <p><strong>¿Qué intentaste hasta ahora para resolver este problema?</strong></p>
 <textarea id="p1"></textarea>
-
 <p><strong>¿Dónde sentís hoy que está el verdadero problema?</strong></p>
 <textarea id="p2"></textarea>
-
 <p><strong>¿Hoy tenés más tiempo o más dinero para resolverlo?</strong></p>
 <textarea id="p3"></textarea>
-
 <button onclick="mostrarFeedback()">Continuar</button>
 </div>
 
 <div id="feedback" class="block purple" style="display:none;">
 <h3>🔎 Feedback breve</h3>
-
 <p><strong>¿El diagnóstico inicial te mostró algo que no estabas viendo?</strong></p>
 <textarea id="f1"></textarea>
-
 <p><strong>¿Qué parte te resultó más útil o más precisa?</strong></p>
 <textarea id="f2"></textarea>
-
 <p><strong>Del 1 al 10, ¿qué tan claro te resultó el diagnóstico?</strong></p>
 <textarea id="f3"></textarea>
-
 <button class="cta" onclick="generarAnalisisCompleto()">🚀 DESBLOQUEAR ANÁLISIS COMPLETO</button>
 </div>
 
 <div id="analisisCompleto" class="block"></div>
-
 <button id="btnDescargarAnalisis" class="download-green" style="display:none;" onclick="descargarAnalisisPDF()">📥 Descargar análisis completo PDF</button>
 
-<p class="small">
-El resultado depende de la información que cargues y de la ejecución posterior.
-Problema Cero no promete resultados mágicos: busca darte claridad, prioridad y dirección.
-</p>
-
+<p class="small">El resultado depende de la información que cargues y de la ejecución posterior. Problema Cero no promete resultados mágicos.</p>
 </div>
 
 <script>
@@ -133,10 +97,7 @@ const PDF_API_URL = "https://problema-cero-pdf-production.up.railway.app/generar
 
 function getUserId(){
   let id = localStorage.getItem("pc_user_id");
-  if(!id){
-    id = "user_" + Math.random().toString(36).slice(2);
-    localStorage.setItem("pc_user_id", id);
-  }
+  if(!id){ id = "user_" + Math.random().toString(36).slice(2); localStorage.setItem("pc_user_id", id); }
   return id;
 }
 
@@ -145,217 +106,105 @@ function esMobile(){
   (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 }
 
-// Resetea los botones si el usuario vuelve a pedir un análisis nuevo
 function resetearBotones() {
   const btnDiag = document.getElementById("btnDescargarDiagnostico");
-  btnDiag.pdfUrl = null;
-  btnDiag.pdfBlob = null;
-  btnDiag.innerText = "📥 Descargar diagnóstico PDF";
-  btnDiag.style.backgroundColor = ""; 
-
+  btnDiag.pdfUrl = null; btnDiag.innerText = "📥 Descargar diagnóstico PDF"; btnDiag.style.backgroundColor = ""; 
   const btnAna = document.getElementById("btnDescargarAnalisis");
-  btnAna.pdfUrl = null;
-  btnAna.pdfBlob = null;
-  btnAna.innerText = "📥 Descargar análisis completo PDF";
-  btnAna.style.backgroundColor = "";
+  btnAna.pdfUrl = null; btnAna.innerText = "📥 Descargar análisis completo PDF"; btnAna.style.backgroundColor = "";
 }
 
 async function consultar(){
   const input = document.getElementById("input").value.trim();
-
-  if(!input){
-    alert("Escribí tu problema");
-    return;
-  }
-
+  if(!input){ alert("Escribí tu problema"); return; }
   resetearBotones();
   localStorage.setItem("pc_problem", input);
-
+  
   const resultado = document.getElementById("resultado");
   const btnDescargarDiagnostico = document.getElementById("btnDescargarDiagnostico");
   const ctaRapido = document.getElementById("ctaRapido");
 
-  resultado.style.display = "block";
-  resultado.innerText = "Analizando tu negocio...";
-  btnDescargarDiagnostico.style.display = "none";
-  ctaRapido.style.display = "none";
+  resultado.style.display = "block"; resultado.innerText = "Analizando tu negocio...";
+  btnDescargarDiagnostico.style.display = "none"; ctaRapido.style.display = "none";
 
   try{
-    const res = await fetch(API_URL,{
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({ problem:input, consultaOriginal:input, userId:getUserId() })
-    });
-
+    const res = await fetch(API_URL,{ method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify({ problem:input, consultaOriginal:input, userId:getUserId() }) });
     const data = await res.json();
-
-    if(!res.ok){
-      resultado.innerText = "Hubo un problema al generar el diagnóstico.\n\nDetalle: " + (data.detalle || data.error || "Error desconocido");
-      return;
-    }
-
+    if(!res.ok){ resultado.innerText = "Error: " + (data.detalle || data.error); return; }
     resultado.innerText = data.diagnostico || "No se pudo generar diagnóstico.";
-    ctaRapido.style.display = "block";
-    btnDescargarDiagnostico.style.display = "block";
-
-  }catch(error){
-    resultado.innerText = "Hubo un problema al conectar con el servidor.\n\nDetalle: " + error.message;
-  }
+    ctaRapido.style.display = "block"; btnDescargarDiagnostico.style.display = "block";
+  }catch(error){ resultado.innerText = "Error: " + error.message; }
 }
 
-function mostrarPreguntas(){
-  document.getElementById("preguntas").style.display = "block";
-}
+function mostrarPreguntas(){ document.getElementById("preguntas").style.display = "block"; }
 
 function mostrarFeedback(){
-  const p1 = document.getElementById("p1").value.trim();
-  const p2 = document.getElementById("p2").value.trim();
-  const p3 = document.getElementById("p3").value.trim();
-
-  if(!p1 || !p2 || !p3){
-    alert("Respondé las 3 preguntas.");
-    return;
-  }
+  if(!document.getElementById("p1").value.trim() || !document.getElementById("p2").value.trim() || !document.getElementById("p3").value.trim()){ alert("Respondé las 3 preguntas."); return; }
   document.getElementById("feedback").style.display = "block";
 }
 
 async function generarAnalisisCompleto(){
-  const problemaOriginal = localStorage.getItem("pc_problem") || "";
-  const p1 = document.getElementById("p1").value.trim();
-  const p2 = document.getElementById("p2").value.trim();
-  const p3 = document.getElementById("p3").value.trim();
-  const f1 = document.getElementById("f1").value.trim();
-  const f2 = document.getElementById("f2").value.trim();
-  const f3 = document.getElementById("f3").value.trim();
-
-  if(!f1 || !f2 || !f3){
-    alert("Completá el feedback.");
-    return;
-  }
-
-  const pedidoCompleto = `ANÁLISIS COMPLETO\n\nCASO ORIGINAL:\n${problemaOriginal}\n\nRESPUESTAS:\n1. ${p1}\n2. ${p2}\n3. ${p3}\n\nFEEDBACK:\n1. ${f1}\n2. ${f2}\n3. ${f3}`;
-
+  const f1 = document.getElementById("f1").value.trim(), f2 = document.getElementById("f2").value.trim(), f3 = document.getElementById("f3").value.trim();
+  if(!f1 || !f2 || !f3){ alert("Completá el feedback."); return; }
+  
+  const pedidoCompleto = `ANÁLISIS COMPLETO\n\nCASO ORIGINAL:\n${localStorage.getItem("pc_problem")}\n\nRESPUESTAS:\n1. ${document.getElementById("p1").value}\n2. ${document.getElementById("p2").value}\n3. ${document.getElementById("p3").value}\n\nFEEDBACK:\n1. ${f1}\n2. ${f2}\n3. ${f3}`;
+  
   const analisis = document.getElementById("analisisCompleto");
   const btnDescargarAnalisis = document.getElementById("btnDescargarAnalisis");
 
-  analisis.style.display = "block";
-  btnDescargarAnalisis.style.display = "none";
-  analisis.innerText = "Generando análisis completo...";
+  analisis.style.display = "block"; btnDescargarAnalisis.style.display = "none"; analisis.innerText = "Generando análisis completo...";
 
   try{
-    const res = await fetch(API_URL,{
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({
-        problem:pedidoCompleto,
-        consultaOriginal:problemaOriginal,
-        respuesta1:p1, respuesta2:p2, respuesta3:p3,
-        feedback1:f1, feedback2:f2, feedback3:f3,
-        userId:getUserId()
-      })
-    });
-
+    const res = await fetch(API_URL,{ method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify({ problem:pedidoCompleto, userId:getUserId() }) });
     const data = await res.json();
-
-    if(!res.ok){
-      analisis.innerText = "Hubo un problema al generar el análisis.\n\nDetalle: " + (data.detalle || data.error || "Error desconocido");
-      return;
-    }
-
+    if(!res.ok){ analisis.innerText = "Error: " + (data.detalle || data.error); return; }
     analisis.innerText = data.diagnostico || "No se pudo generar análisis.";
     btnDescargarAnalisis.style.display = "block";
-
-  }catch(error){
-    analisis.innerText = "Hubo un problema al conectar con el servidor.\n\nDetalle: " + error.message;
-  }
+  }catch(error){ analisis.innerText = "Error: " + error.message; }
 }
 
-// SISTEMA BLINDADO EN 2 PASOS PARA BURLAR EL CRONÓMETRO DE SAFARI
 async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
   const boton = document.getElementById(idBoton);
 
-  // PASO 2: Si el PDF ya está listo en memoria, el toque es instantáneo y muestra la bandeja nativa
+  // Lógica bancaria: Si el PDF está listo, lo abrimos para "Verlo".
   if (boton.pdfUrl) {
-    try {
-      let useShare = false;
-      let fileToShare = null;
-      if (navigator.share) {
-          fileToShare = new File([boton.pdfBlob], nombreArchivo, { type: "application/pdf" });
-          if (navigator.canShare && navigator.canShare({ files: [fileToShare] })) {
-              useShare = true;
-          }
-      }
-      
-      if (useShare) {
-          await navigator.share({ files: [fileToShare], title: titulo });
-      } else {
-          const link = document.createElement("a");
-          link.href = boton.pdfUrl;
-          link.download = nombreArchivo;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-      }
-    } catch(e) { 
-      console.log("Acción nativa cancelada por el usuario o navegador:", e); 
+    if (esMobile()) {
+      window.location.href = boton.pdfUrl; 
+    } else {
+      window.open(boton.pdfUrl, '_blank');
     }
-    return; // Terminamos acá
+    return;
   }
 
-  // PASO 1: Mandar a fabricar el PDF al servidor
   const textoOriginal = boton.innerText;
   boton.innerText = "⏳ Preparando documento...";
   boton.disabled = true;
 
   try {
-    const res = await fetch(PDF_API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ diagnostico: contenido, isMobile: esMobile() })
-    });
-
+    const res = await fetch(PDF_API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ diagnostico: contenido, isMobile: esMobile() }) });
     if (!res.ok) throw new Error("No se pudo conectar con el motor PDF.");
 
-    boton.pdfBlob = await res.blob();
-    boton.pdfUrl = window.URL.createObjectURL(boton.pdfBlob);
+    const blob = await res.blob();
+    boton.pdfUrl = window.URL.createObjectURL(blob);
 
-    // Éxito: Cambiamos el botón a color premium indicando que ya está listo para guardar
-    boton.innerText = "✅ PDF Listo. Tocá para Guardar";
-    boton.style.backgroundColor = "#16a34a"; // Verde fuerte corporativo
+    boton.innerText = "✅ PDF Listo. Tocá para Ver";
+    boton.style.backgroundColor = "#16a34a";
     boton.disabled = false;
-
   } catch(error) {
-    alert("Hubo un problema al preparar el PDF: " + error.message);
+    alert("Error: " + error.message);
     boton.innerText = textoOriginal;
     boton.disabled = false;
   }
 }
 
 async function descargarDiagnosticoPDF(){
-  const consulta = localStorage.getItem("pc_problem") || "";
-  const diagnostico = document.getElementById("resultado").innerText || "";
-
-  if(!diagnostico.trim()){
-    alert("Todavía no hay diagnóstico para descargar.");
-    return;
-  }
-  const contenido = `CONSULTA ORIGINAL:\n${consulta}\n\nDIAGNÓSTICO:\n${diagnostico}`;
-  await descargarPDFBackend("Diagnóstico estratégico", contenido, "Diagnostico_ProblemaCero.pdf", "btnDescargarDiagnostico");
+  const contenido = `CONSULTA ORIGINAL:\n${localStorage.getItem("pc_problem")}\n\nDIAGNÓSTICO:\n${document.getElementById("resultado").innerText}`;
+  await descargarPDFBackend("Diagnóstico", contenido, "Diagnostico_ProblemaCero.pdf", "btnDescargarDiagnostico");
 }
 
 async function descargarAnalisisPDF(){
-  const consulta = localStorage.getItem("pc_problem") || "";
-  const diagnostico = document.getElementById("resultado").innerText || "";
-  const analisis = document.getElementById("analisisCompleto").innerText || "";
-
-  if(!analisis.trim()){
-    alert("Todavía no hay análisis completo para descargar.");
-    return;
-  }
-  const contenido = `CONSULTA ORIGINAL:\n${consulta}\n\nDIAGNÓSTICO INICIAL:\n${diagnostico}\n\nANÁLISIS COMPLETO:\n${analisis}`;
-  await descargarPDFBackend("Análisis estratégico completo", contenido, "Informe_Completo_ProblemaCero.pdf", "btnDescargarAnalisis");
+  const contenido = `CONSULTA ORIGINAL:\n${localStorage.getItem("pc_problem")}\n\nDIAGNÓSTICO INICIAL:\n${document.getElementById("resultado").innerText}\n\nANÁLISIS COMPLETO:\n${document.getElementById("analisisCompleto").innerText}`;
+  await descargarPDFBackend("Análisis", contenido, "Informe_ProblemaCero.pdf", "btnDescargarAnalisis");
 }
 </script>
-
 </body>
 </html>
