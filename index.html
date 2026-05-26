@@ -101,11 +101,6 @@ function getUserId(){
   return id;
 }
 
-function esMobile(){
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-}
-
 function resetearBotones() {
   const btnDiag = document.getElementById("btnDescargarDiagnostico");
   btnDiag.pdfUrl = null; btnDiag.innerText = "📥 Descargar diagnóstico PDF"; btnDiag.style.backgroundColor = ""; 
@@ -165,13 +160,14 @@ async function generarAnalisisCompleto(){
 async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
   const boton = document.getElementById(idBoton);
 
-  // Lógica bancaria: Si el PDF está listo, lo abrimos para "Verlo".
+  // Lógica bancaria para todas las pantallas
   if (boton.pdfUrl) {
-    if (esMobile()) {
-      window.location.href = boton.pdfUrl; 
-    } else {
-      window.open(boton.pdfUrl, '_blank');
-    }
+    const a = document.createElement("a");
+    a.href = boton.pdfUrl;
+    a.target = "_blank"; // Esto fuerza al iPhone a abrir el visor de PDF
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
     return;
   }
 
@@ -180,7 +176,7 @@ async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
   boton.disabled = true;
 
   try {
-    const res = await fetch(PDF_API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ diagnostico: contenido, isMobile: esMobile() }) });
+    const res = await fetch(PDF_API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ diagnostico: contenido }) });
     if (!res.ok) throw new Error("No se pudo conectar con el motor PDF.");
 
     const blob = await res.blob();
