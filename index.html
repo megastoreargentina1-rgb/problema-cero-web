@@ -162,7 +162,8 @@ function abrirOCompartir(blob, nombreArchivo) {
     const file = new File([blob], nombreArchivo, { type: 'application/pdf' });
     if (navigator.canShare({ files: [file] })) {
       navigator.share({
-        files: [file]
+        files: [file],
+        title: "Diagnóstico Problema Cero" // Inyección para evitar el error de archivo vacío en Apple
       }).catch(err => console.log("Operación cancelada", err));
       return;
     }
