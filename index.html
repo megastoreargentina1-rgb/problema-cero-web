@@ -16,8 +16,8 @@ body{margin:0;font-family:Arial,sans-serif;background:#020617;color:#e5e7eb;}
 .purple{background:#1e1b4b;border:1px solid #818cf8;}
 .orange{background:#431407;border:1px solid #f97316;}
 .border-red{border-top:4px solid #dc2626; box-shadow: 0 4px 20px rgba(220, 38, 38, 0.05);}
-textarea,input{width:100%;box-sizing:border-box;padding:16px;border-radius:12px;border:none;background:#1e293b;color:white;font-size:16px;margin-top:10px;}
-textarea{min-height:130px;resize:vertical;}
+textarea,input{width:100%;box-sizing:border-box;padding:16px;border-radius:12px;border:none;background:#1e293b;color:white;font-size:16px;margin-top:10px;font-family:inherit;}
+textarea{min-height:140px;resize:vertical;line-height:1.5;}
 button{width:100%;margin-top:14px;padding:17px;border:none;border-radius:14px;font-size:18px;background:#dc2626;color:white;font-weight:bold;cursor:pointer;-webkit-user-select:none;user-select:none;touch-action:manipulation; transition: all 0.3s ease;}
 button:hover{background:#b91c1c;}
 button:disabled{background:#475569;cursor:not-allowed;}
@@ -48,29 +48,30 @@ li{margin-bottom:6px;}
 </div>
 <div class="block gold">
 <h3>⚠️ Antes de empezar</h3>
-<p>Esto no es un test automático. Es un diagnóstico a medida. Respondé las siguientes 5 preguntas contándome tu situación real para que el sistema pueda analizar tu caso.</p>
+<p>Esto no es un test automático. Es un análisis a medida. Respondé las siguientes 5 preguntas de forma numerada para que el sistema pueda procesar tu caso con precisión.</p>
 </div>
 
-<!-- EMBUDO DE 5 PASOS -->
+<!-- EMBUDO DE 5 PASOS ORDENADO -->
 <div id="funnel-step-1" class="block border-red">
 <h3>Paso 1 de 5: Tu Negocio</h3>
-<p>Para arrancar, contame sobre tu negocio de forma simple: ¿Qué estás vendiendo? ¿A quién se lo vendés? ¿Hace cuánto tiempo existe el proyecto?</p>
-<textarea id="q1" placeholder="Ej: Vendo servicios de estética para mujeres de mi ciudad. El negocio existe hace 2 años..."></textarea>
+<p>Para arrancar, contame sobre tu negocio respondiendo estos 3 puntos:</p>
+<p><strong>1.</strong> ¿Qué estás vendiendo?<br><strong>2.</strong> ¿A qué tipo de público apuntás (o quiénes te compran más)?<br><strong>3.</strong> ¿Hace cuánto tiempo arrancaste?</p>
+<textarea id="q1" placeholder="1. Vendo zapatillas urbanas.&#10;2. Apunto principalmente a jóvenes de 18 a 30 años.&#10;3. Arranqué hace 1 año."></textarea>
 <button onclick="avanzarPaso(2)">Siguiente paso →</button>
 </div>
 
 <div id="funnel-step-2" class="block border-red" style="display:none;">
 <h3>Paso 2 de 5: El Escenario Actual</h3>
-<p>De estas situaciones, <strong>¿cuál se parece más a lo que estás viviendo hoy?</strong> (No hace falta que sea exacta, elegí la más cercana):</p>
+<p>Leé estas 5 situaciones y respondé los 2 puntos de abajo:</p>
 <ul>
-  <li><strong>1. Muchas consultas, pocas ventas:</strong> Me preguntan, pero cuando paso el precio desaparecen.</li>
-  <li><strong>2. Invisibilidad:</strong> Tengo un buen producto/servicio, pero casi nadie me consulta.</li>
-  <li><strong>3. Guerra de precios:</strong> Siento que si no hago descuentos o bajo mis tarifas, no vendo.</li>
-  <li><strong>4. Mucho esfuerzo, poca ganancia:</strong> Trabajo todo el día operando, pero los números no rinden.</li>
-  <li><strong>5. Falta de retención:</strong> Me compran una vez, pero les cuesta volver.</li>
+  <li><strong>Opción 1:</strong> Muchas consultas, pocas ventas (preguntan el precio y desaparecen).</li>
+  <li><strong>Opción 2:</strong> Invisibilidad (buen producto, pero nadie consulta).</li>
+  <li><strong>Opción 3:</strong> Guerra de precios (si no hago descuentos, no vendo).</li>
+  <li><strong>Opción 4:</strong> Mucho esfuerzo, poca ganancia (trabajo todo el día pero no rinde).</li>
+  <li><strong>Opción 5:</strong> Falta de retención (compran una vez y no vuelven).</li>
 </ul>
-<p><strong>Detallá abajo puntualmente cómo sucede esto</strong> con ejemplos reales de tu día a día.</p>
-<textarea id="q2" placeholder="Ej: Me pasa la opción 1. Me llegan unos 10 mensajes por día preguntando info, les digo el valor y me clavan el visto..."></textarea>
+<p><strong>1.</strong> ¿Cuál de estas opciones te está afectando más?<br><strong>2.</strong> Detallá con un ejemplo real cómo te pasa esto en el día a día.</p>
+<textarea id="q2" placeholder="1. Opción 1.&#10;2. Me llegan unos 10 mensajes por día preguntando info, les digo el valor y me clavan el visto."></textarea>
 <div style="display:flex; gap:10px;">
 <button onclick="avanzarPaso(1)" class="btn-secondary">← Volver</button>
 <button onclick="avanzarPaso(3)">Siguiente paso →</button>
@@ -79,8 +80,9 @@ li{margin-bottom:6px;}
 
 <div id="funnel-step-3" class="block border-red" style="display:none;">
 <h3>Paso 3 de 5: Las Bases de tu Negocio</h3>
-<p>Contame cómo funciona hoy tu negocio. Por ejemplo: ¿Cómo definís tus precios y costos? ¿Por qué canales te llegan los clientes (local, web, Instagram)? ¿Hacés publicidad paga o dependés del boca a boca? ¿Trabajás solo o tenés un equipo que te ayuda?</p>
-<textarea id="q3" placeholder="Ej: Defino los precios mirando a la competencia. Solo uso Instagram y dependo del boca a boca. Trabajo completamente solo..."></textarea>
+<p>Contame cómo funciona tu negocio hoy respondiendo estos 4 puntos:</p>
+<p><strong>1.</strong> ¿Cómo definís tus precios?<br><strong>2.</strong> ¿Por qué canales vendés (local, web, Instagram)?<br><strong>3.</strong> ¿Hacés publicidad paga o es boca a boca?<br><strong>4.</strong> ¿Trabajás solo o tenés equipo?</p>
+<textarea id="q3" placeholder="1. Defino los precios mirando a la competencia.&#10;2. Solo vendo por Instagram.&#10;3. Dependo del boca a boca.&#10;4. Trabajo completamente solo."></textarea>
 <div style="display:flex; gap:10px;">
 <button onclick="avanzarPaso(2)" class="btn-secondary">← Volver</button>
 <button onclick="avanzarPaso(4)">Siguiente paso →</button>
@@ -89,8 +91,9 @@ li{margin-bottom:6px;}
 
 <div id="funnel-step-4" class="block border-red" style="display:none;">
 <h3>Paso 4 de 5: El Punto de Bloqueo</h3>
-<p>Si tuvieras que señalar dónde sentís que se frena el crecimiento hoy, ¿qué dirías? (Ej: Generar consultas, convertir esas consultas en ventas, la rentabilidad que te queda, o simplemente <strong>"No estoy seguro"</strong>).</p>
-<textarea id="q4" placeholder="Ej: Creo que el bloqueo está en convertir las ventas, porque la gente me escribe pero no logro cerrarlos..."></textarea>
+<p>Respondé de forma directa:</p>
+<p><strong>1.</strong> Si tuvieras que señalar dónde se frena tu crecimiento hoy, ¿qué dirías? (Ej: Generar consultas, cerrar ventas, la rentabilidad, o "No estoy seguro").</p>
+<textarea id="q4" placeholder="1. Creo que el bloqueo está en cerrar las ventas, genero consultas pero no logro que paguen."></textarea>
 <div style="display:flex; gap:10px;">
 <button onclick="avanzarPaso(3)" class="btn-secondary">← Volver</button>
 <button onclick="avanzarPaso(5)">Siguiente paso →</button>
@@ -99,11 +102,12 @@ li{margin-bottom:6px;}
 
 <div id="funnel-step-5" class="block border-red" style="display:none;">
 <h3>Paso 5 de 5: Tu Objetivo</h3>
-<p>Para poder armar una ruta clara: <strong>¿Qué resultado concreto te gustaría conseguir en los próximos 90 días?</strong> (Ej: Aumentar las ventas un 30%, conseguir más consultas calificadas, ordenar los números, delegar tareas).</p>
-<textarea id="q5" placeholder="Ej: En los próximos 90 días me gustaría dejar de competir por precio y lograr al menos 5 clientes fijos por mes..."></textarea>
+<p>Para poder armar una ruta clara, respondé este último punto:</p>
+<p><strong>1.</strong> ¿Qué resultado concreto te gustaría lograr en los próximos 90 días?</p>
+<textarea id="q5" placeholder="1. Me gustaría dejar de competir por precio y lograr al menos 5 clientes fijos por mes."></textarea>
 <div style="display:flex; gap:10px;">
 <button onclick="avanzarPaso(4)" class="btn-secondary">← Volver</button>
-<button onclick="consultar()">🔍 Diagnosticar mi negocio</button>
+<button onclick="consultar()">🔍 Iniciar Análisis Estratégico</button>
 </div>
 </div>
 <!-- FIN DEL EMBUDO -->
@@ -119,26 +123,26 @@ li{margin-bottom:6px;}
 
 <div id="preguntas" class="block" style="display:none;">
 <h3>🧠 Para armar tu Plan necesito un dato clave</h3>
-<p><strong>Para que las soluciones que te proponga sean realistas, contame: hoy en día, ¿tenés más TIEMPO (para hacer las cosas vos mismo) o más CAPITAL (para delegar o invertir)?</strong></p>
-<textarea id="p3" placeholder="Ej: Tengo poco tiempo porque trabajo en otro lado, pero puedo invertir algo de capital en publicidad o herramientas..."></textarea>
+<p><strong>1.</strong> Para que las soluciones que te proponga sean realistas: hoy en día, ¿tenés más TIEMPO (para ejecutar vos) o más CAPITAL (para delegar/invertir)?</p>
+<textarea id="p3" placeholder="1. Tengo poco tiempo por otro trabajo, pero puedo invertir algo de capital en publicidad."></textarea>
 <button onclick="mostrarFeedback()">Continuar</button>
 </div>
 
 <div id="feedback" class="block purple" style="display:none;">
-<h3>🔎 Feedback breve del primer diagnóstico</h3>
-<p><strong>¿Este primer diagnóstico te mostró algo de tu negocio que no estabas viendo?</strong></p>
-<textarea id="f1"></textarea>
-<p><strong>¿Qué punto específico te resultó más útil?</strong></p>
-<textarea id="f2"></textarea>
-<p><strong>Del 1 al 10, ¿qué tan clara y fácil de entender te resultó la respuesta?</strong></p>
-<textarea id="f3"></textarea>
+<h3>🔎 Feedback breve del primer análisis</h3>
+<p><strong>1.</strong> ¿Este primer análisis te mostró algo de tu negocio que no estabas viendo?</p>
+<textarea id="f1" placeholder="1. Sí, me di cuenta que..."></textarea>
+<p><strong>2.</strong> ¿Qué punto específico te resultó más útil?</p>
+<textarea id="f2" placeholder="2. Me sirvió mucho la parte de..."></textarea>
+<p><strong>3.</strong> Del 1 al 10, ¿qué tan clara y fácil de entender te resultó la respuesta?</p>
+<textarea id="f3" placeholder="3. Le doy un..."></textarea>
 <button class="cta" onclick="generarAnalisisCompleto()">🚀 DESBLOQUEAR MAPA DE EJECUCIÓN</button>
 </div>
 
 <div id="analisisCompleto" class="block"></div>
 <button id="btnDescargarAnalisis" class="download-green" style="display:none;" onclick="descargarAnalisisPDF()">📥 Descargar Análisis Completo PDF</button>
 
-<p class="small">El resultado depende de la información que ingreses. Problema Cero no promete resultados mágicos, te entrega claridad y estructura.</p>
+<p class="small">El resultado depende de la información que ingreses. Problema Cero no promete resultados mágicos, te entrega claridad y estructura corporativa.</p>
 </div>
 
 <script>
@@ -185,7 +189,7 @@ async function consultar(){
   const ctaRapido = document.getElementById("ctaRapido");
 
   document.getElementById('funnel-step-5').style.display = 'none';
-  resultado.style.display = "block"; resultado.innerText = "Analizando tu caso para encontrar la falla estructural...";
+  resultado.style.display = "block"; resultado.innerText = "Analizando la estructura de tu negocio...";
   btnDescargarDiagnostico.style.display = "none"; ctaRapido.style.display = "none";
 
   try{
@@ -213,7 +217,7 @@ async function generarAnalisisCompleto(){
   const analisis = document.getElementById("analisisCompleto");
   const btnDescargarAnalisis = document.getElementById("btnDescargarAnalisis");
 
-  analisis.style.display = "block"; btnDescargarAnalisis.style.display = "none"; analisis.innerText = "Armando tu plan de acción paso a paso...";
+  analisis.style.display = "block"; btnDescargarAnalisis.style.display = "none"; analisis.innerText = "Armando tu mapa de ejecución paso a paso...";
 
   try{
     const res = await fetch(API_URL,{ method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify({ problem:pedidoCompleto, userId:getUserId() }) });
@@ -230,7 +234,7 @@ function abrirOCompartir(blob, nombreArchivo) {
     if (navigator.canShare({ files: [file] })) {
       navigator.share({
         files: [file],
-        title: "Diagnóstico Problema Cero"
+        title: "Análisis Problema Cero"
       }).catch(err => console.log("Operación cancelada", err));
       return;
     }
@@ -275,13 +279,13 @@ async function descargarPDFBackend(titulo, contenido, nombreArchivo, idBoton){
 }
 
 async function descargarDiagnosticoPDF(){
-  const contenido = `CASO DEL CLIENTE:\n${localStorage.getItem("pc_problem")}\n\nDIAGNÓSTICO ESTRATÉGICO:\n${document.getElementById("resultado").innerText}`;
-  await descargarPDFBackend("Diagnóstico", contenido, "Diagnostico_ProblemaCero.pdf", "btnDescargarDiagnostico");
+  const contenido = `CASO DEL CLIENTE:\n${localStorage.getItem("pc_problem")}\n\nANÁLISIS ESTRATÉGICO:\n${document.getElementById("resultado").innerText}`;
+  await descargarPDFBackend("Análisis", contenido, "Analisis_ProblemaCero.pdf", "btnDescargarDiagnostico");
 }
 
 async function descargarAnalisisPDF(){
-  const contenido = `CASO DEL CLIENTE:\n${localStorage.getItem("pc_problem")}\n\nDIAGNÓSTICO INICIAL:\n${document.getElementById("resultado").innerText}\n\nMAPA DE EJECUCIÓN (ANÁLISIS COMPLETO):\n${document.getElementById("analisisCompleto").innerText}`;
-  await descargarPDFBackend("Análisis", contenido, "PlanEjecucion_ProblemaCero.pdf", "btnDescargarAnalisis");
+  const contenido = `CASO DEL CLIENTE:\n${localStorage.getItem("pc_problem")}\n\nANÁLISIS INICIAL:\n${document.getElementById("resultado").innerText}\n\nMAPA DE EJECUCIÓN (COMPLETO):\n${document.getElementById("analisisCompleto").innerText}`;
+  await descargarPDFBackend("Plan", contenido, "PlanEjecucion_ProblemaCero.pdf", "btnDescargarAnalisis");
 }
 </script>
 </body>
