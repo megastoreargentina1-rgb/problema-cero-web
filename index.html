@@ -226,6 +226,22 @@ function resetearBotones() {
 }
 
 function avanzarPaso(paso) {
+  const validaciones = {
+    2: [["q1a","¿Qué estás vendiendo?"], ["q1b","¿A qué público apuntás?"], ["q1c","¿Hace cuánto arrancaste?"]],
+    3: [["q2a","¿Cuál opción te representa?"], ["q2b","El ejemplo del día a día"]],
+    4: [["q3a","¿Cómo definís tus precios?"], ["q3b","¿Por qué canales vendés?"], ["q3c","¿Hacés publicidad?"], ["q3d","¿Trabajás solo o con equipo?"]],
+    5: [["q4a","El punto de bloqueo"]]
+  };
+  const camposActuales = validaciones[paso];
+  if (camposActuales) {
+    for (const [id, nombre] of camposActuales) {
+      if (!document.getElementById(id).value.trim()) {
+        alert("Por favor completá: " + nombre);
+        document.getElementById(id).focus();
+        return;
+      }
+    }
+  }
   for (let i = 1; i <= 5; i++) {
     const el = document.getElementById('funnel-step-' + i);
     if (el) el.style.display = 'none';
