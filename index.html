@@ -32,8 +32,6 @@ ul{line-height:1.8;padding-left:22px;}
 li{margin-bottom:6px;}
 .video-box{background:#000;border-radius:16px;padding:14px;margin-top:20px;text-align:center;border:1px solid #334155;}
 .small{color:#94a3b8;font-size:14px;line-height:1.5;margin-top:30px;text-align:center;}
-
-/* Conversacional */
 .pregunta-conversacional{margin-bottom:20px;}
 .pregunta-conversacional p{margin-bottom:6px;color:#e5e7eb;font-size:16px;}
 .pregunta-conversacional textarea{min-height:80px;}
@@ -64,7 +62,7 @@ li{margin-bottom:6px;}
   <p>Esto no es un test automático. Es un análisis a medida. Respondé cada pregunta con la mayor precisión posible para que PROBLEMA CERO pueda diagnosticar tu caso.</p>
 </div>
 
-<!-- ── PASO 1 ── -->
+<!-- PASO 1 -->
 <div id="funnel-step-1" class="block border-red">
   <h3>Paso 1 de 5 — Tu Negocio</h3>
   <div class="pregunta-bloque">
@@ -82,7 +80,7 @@ li{margin-bottom:6px;}
   <button onclick="avanzarPaso(2)">Siguiente paso →</button>
 </div>
 
-<!-- ── PASO 2 ── -->
+<!-- PASO 2 -->
 <div id="funnel-step-2" class="block border-red" style="display:none;">
   <h3>Paso 2 de 5 — El Escenario Actual</h3>
   <p style="margin-bottom:14px;">¿Cuál de estas situaciones te está afectando más hoy?</p>
@@ -107,7 +105,7 @@ li{margin-bottom:6px;}
   </div>
 </div>
 
-<!-- ── PASO 3 ── -->
+<!-- PASO 3 -->
 <div id="funnel-step-3" class="block border-red" style="display:none;">
   <h3>Paso 3 de 5 — Las Bases de tu Negocio</h3>
   <div class="pregunta-bloque">
@@ -132,7 +130,7 @@ li{margin-bottom:6px;}
   </div>
 </div>
 
-<!-- ── PASO 4 ── -->
+<!-- PASO 4 -->
 <div id="funnel-step-4" class="block border-red" style="display:none;">
   <h3>Paso 4 de 5 — El Punto de Bloqueo</h3>
   <p style="margin-bottom:14px;">¿En qué área sentís que se frena tu crecimiento hoy?</p>
@@ -153,7 +151,7 @@ li{margin-bottom:6px;}
   </div>
 </div>
 
-<!-- ── PASO 5 ── -->
+<!-- PASO 5 -->
 <div id="funnel-step-5" class="block border-red" style="display:none;">
   <h3>Paso 5 de 5 — Tu Objetivo</h3>
   <p style="margin-bottom:14px;">¿Cuál de estos objetivos representa mejor lo que querés lograr en los próximos 90 días?</p>
@@ -173,7 +171,7 @@ li{margin-bottom:6px;}
   </div>
 </div>
 
-<!-- ── RESULTADO DIAGNÓSTICO ── -->
+<!-- RESULTADO DIAGNÓSTICO -->
 <div id="resultado" class="block"></div>
 <button id="btnDescargarDiagnostico" class="download" style="display:none;" onclick="descargarDiagnosticoPDF()">📥 Descargar documento PDF</button>
 
@@ -218,6 +216,41 @@ li{margin-bottom:6px;}
 <script>
 const API_URL     = "https://problema-cero-api.onrender.com/api/diagnostico";
 const PDF_API_URL = "https://problema-cero-pdf-production.up.railway.app/generar-pdf";
+
+// Almacena los arrays estructurados cuando llegan de la API
+// Si la API no los devuelve (fallback), queda vacío
+let _planData = {
+  plan7Dias:  [],
+  plan30Dias: [],
+  contenidos: [],
+  escenarios: [],
+  mensajes:   []
+};
+
+function renderPlanEnPantalla(planData) {
+  let html = "";
+  if (planData.plan7Dias && planData.plan7Dias.length) {
+    html += "\n\n📅 PLAN DE ACCIÓN — PRÓXIMOS 7 DÍAS\n\n";
+    planData.plan7Dias.forEach(d => { html += "DÍA " + d.dia + " — " + d.accion + "\n\n"; });
+  }
+  if (planData.plan30Dias && planData.plan30Dias.length) {
+    html += "\n📆 PLAN DE ACCIÓN — PRÓXIMOS 30 DÍAS\n\n";
+    planData.plan30Dias.forEach(s => { html += "SEMANA " + s.semana + " — " + s.objetivo + "\n" + s.accion + "\n\n"; });
+  }
+  if (planData.contenidos && planData.contenidos.length) {
+    html += "\n📌 CONTENIDO QUE DEBERÍA CREAR\n\n";
+    planData.contenidos.forEach(c => { html += c.numero + '. "' + c.gancho + '"\nTema: ' + c.tema + "\nObjetivo: " + c.objetivo + "\n\n"; });
+  }
+  if (planData.mensajes && planData.mensajes.length) {
+    html += "\n💬 MENSAJES DE VENTA LISTOS PARA USAR\n\n";
+    planData.mensajes.forEach(m => { html += m.numero + '. "' + m.texto + '"\n\n'; });
+  }
+  if (planData.escenarios && planData.escenarios.length) {
+    html += "\n⚠️ SI / ENTONCES\n\n";
+    planData.escenarios.forEach(e => { html += "Si " + e.condicion + ", entonces " + e.accion + "\n\n"; });
+  }
+  return html;
+}
 
 function getUserId() {
   let id = localStorage.getItem("pc_user_id");
@@ -273,7 +306,7 @@ async function consultar() {
   const q4a = document.getElementById("q4a").value.trim();
   const q5a = document.getElementById("q5a").value.trim();
 
-  if (!q1a || !q1b || !q1c || !q2a || !q2b || !q3a || !q3b || !q3c || !q3d || !q4a || !q5a) {
+  if (!q1a||!q1b||!q1c||!q2a||!q2b||!q3a||!q3b||!q3c||!q3d||!q4a||!q5a) {
     alert("Por favor completá todas las preguntas para que podamos analizar tu caso con precisión.");
     return;
   }
@@ -288,9 +321,9 @@ async function consultar() {
   resetearBotones();
   localStorage.setItem("pc_problem", inputCombinado);
 
-  const resultado             = document.getElementById("resultado");
+  const resultado               = document.getElementById("resultado");
   const btnDescargarDiagnostico = document.getElementById("btnDescargarDiagnostico");
-  const ctaRapido             = document.getElementById("ctaRapido");
+  const ctaRapido               = document.getElementById("ctaRapido");
 
   document.getElementById('funnel-step-5').style.display = 'none';
   resultado.style.display = "block";
@@ -300,7 +333,11 @@ async function consultar() {
   resultado.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   try {
-    const res  = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ problem: inputCombinado, consultaOriginal: inputCombinado, userId: getUserId() }) });
+    const res  = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ problem: inputCombinado, consultaOriginal: inputCombinado, userId: getUserId() })
+    });
     const data = await res.json();
     if (!res.ok) {
       resultado.innerText = "Hubo un problema al analizar tu caso. Por favor intentá de nuevo en unos segundos.";
@@ -334,14 +371,14 @@ async function generarAnalisisCompleto() {
   const f1 = document.getElementById("f1").value.trim();
   const f2 = document.getElementById("f2").value.trim();
   const f3 = document.getElementById("f3").value.trim();
-  if (!f1 || !f2 || !f3) { alert("Por favor completá las respuestas para desbloquear tu plan."); return; }
+  if (!f1||!f2||!f3) { alert("Por favor completá las respuestas para desbloquear tu plan."); return; }
 
   const pedidoCompleto =
     `ANÁLISIS COMPLETO\n\nCASO ORIGINAL:\n${localStorage.getItem("pc_problem")}` +
     `\n\nRECURSOS DISPONIBLES (TIEMPO VS CAPITAL):\n${document.getElementById("p3").value}` +
     `\n\nFEEDBACK DEL USUARIO:\n1. ${f1}\n2. ${f2}\n3. ${f3}`;
 
-  const analisis            = document.getElementById("analisisCompleto");
+  const analisis             = document.getElementById("analisisCompleto");
   const btnDescargarAnalisis = document.getElementById("btnDescargarAnalisis");
 
   analisis.style.display = "block";
@@ -349,14 +386,31 @@ async function generarAnalisisCompleto() {
   analisis.innerText = "Armando tu mapa de ejecución paso a paso...";
   analisis.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+  // Resetear planData antes de cada generación
+  _planData = { plan7Dias: [], plan30Dias: [], contenidos: [], escenarios: [], mensajes: [] };
+
   try {
-    const res  = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ problem: pedidoCompleto, userId: getUserId() }) });
+    const res  = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ problem: pedidoCompleto, userId: getUserId() })
+    });
     const data = await res.json();
     if (!res.ok) {
       analisis.innerText = "Hubo un problema al generar el plan. Por favor intentá de nuevo en unos segundos.";
       return;
     }
+
     analisis.innerText = data.diagnostico || "No se pudo generar el documento.";
+
+    // Guardar arrays estructurados si la API los devolvió
+    // Si no los devolvió (fallback), _planData queda con arrays vacíos
+    if (data.plan7Dias  && data.plan7Dias.length  > 0) _planData.plan7Dias  = data.plan7Dias;
+    if (data.plan30Dias && data.plan30Dias.length > 0) _planData.plan30Dias = data.plan30Dias;
+    if (data.contenidos && data.contenidos.length > 0) _planData.contenidos = data.contenidos;
+    if (data.escenarios && data.escenarios.length > 0) _planData.escenarios = data.escenarios;
+    if (data.mensajes   && data.mensajes.length   > 0) _planData.mensajes   = data.mensajes;
+
     btnDescargarAnalisis.style.display = "block";
   } catch (error) {
     analisis.innerText = "Hubo un problema de conexión. Por favor intentá de nuevo en unos segundos.";
@@ -380,8 +434,8 @@ function abrirOCompartir(blob, nombreArchivo) {
   window.URL.revokeObjectURL(url);
 }
 
-async function descargarPDFBackend(contenido, nombreArchivo, idBoton) {
-  const boton        = document.getElementById(idBoton);
+async function descargarPDFBackend(contenido, planData, nombreArchivo, idBoton) {
+  const boton = document.getElementById(idBoton);
   if (boton.pdfBlob) { abrirOCompartir(boton.pdfBlob, nombreArchivo); return; }
 
   const textoOriginal = boton.innerText;
@@ -389,7 +443,21 @@ async function descargarPDFBackend(contenido, nombreArchivo, idBoton) {
   boton.disabled  = true;
 
   try {
-    const res = await fetch(PDF_API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ diagnostico: contenido }) });
+    // Armar el payload con el texto + los arrays estructurados
+    const payload = {
+      diagnostico: contenido,
+      plan7Dias:   planData.plan7Dias  || [],
+      plan30Dias:  planData.plan30Dias || [],
+      contenidos:  planData.contenidos || [],
+      escenarios:  planData.escenarios || [],
+      mensajes:    planData.mensajes   || []
+    };
+
+    const res = await fetch(PDF_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
     if (!res.ok) throw new Error("No se pudo conectar con el motor PDF.");
     const blob      = await res.blob();
     boton.pdfBlob   = blob;
@@ -403,16 +471,26 @@ async function descargarPDFBackend(contenido, nombreArchivo, idBoton) {
   }
 }
 
-// PDF DIAGNÓSTICO — solo el diagnóstico, sin el caso del cliente
+// PDF DIAGNÓSTICO — sin arrays (no cambió nada)
 async function descargarDiagnosticoPDF() {
   const contenido = document.getElementById("resultado").innerText;
-  await descargarPDFBackend(contenido, "Analisis_ProblemaCero.pdf", "btnDescargarDiagnostico");
+  await descargarPDFBackend(
+    contenido,
+    { plan7Dias: [], plan30Dias: [], contenidos: [], escenarios: [], mensajes: [] },
+    "Analisis_ProblemaCero.pdf",
+    "btnDescargarDiagnostico"
+  );
 }
 
-// PDF PLAN — solo el plan de ejecución, con carátula propia
+// PDF PLAN — con arrays estructurados si están disponibles
 async function descargarAnalisisPDF() {
-  const contenido = `ANÁLISIS COMPLETO:\n\n${document.getElementById("analisisCompleto").innerText}`;
-  await descargarPDFBackend(contenido, "PlanEjecucion_ProblemaCero.pdf", "btnDescargarAnalisis");
+  const contenido = document.getElementById("analisisCompleto").innerText;
+  await descargarPDFBackend(
+    contenido,
+    _planData,
+    "PlanEjecucion_ProblemaCero.pdf",
+    "btnDescargarAnalisis"
+  );
 }
 </script>
 </body>
