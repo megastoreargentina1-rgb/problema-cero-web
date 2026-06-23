@@ -175,36 +175,25 @@ li{margin-bottom:6px;}
 <div id="resultado" class="block"></div>
 <button id="btnDescargarDiagnostico" class="download" style="display:none;" onclick="descargarDiagnosticoPDF()">📥 Descargar documento PDF</button>
 
+<!-- CTA PARA DESBLOQUEAR PLAN -->
 <div id="ctaRapido" class="block orange" style="display:none;">
-  <h3>🚀 Etapa privada de validación</h3>
-  <p>Actualmente Problema Cero abrió una etapa privada de validación con negocios reales para seguir mejorando el sistema y brindarte los pasos exactos a seguir.</p>
-  <button class="cta" onclick="mostrarPreguntas()">🚀 SOLICITAR ACCESO AL PLAN DE EJECUCIÓN</button>
+  <h3>🚀 Tu diagnóstico está listo</h3>
+  <p>El siguiente paso es tu Mapa de Ejecución: un plan concreto con acciones para los próximos 7 y 30 días, contenido estratégico listo para usar y escenarios de decisión.</p>
+  <button class="cta" onclick="mostrarFeedback()">🚀 DESBLOQUEAR MAPA DE EJECUCIÓN</button>
 </div>
 
-<div id="preguntas" class="block" style="display:none;">
-  <h3>🧠 Para armar tu Plan necesito un dato clave</h3>
-  <div class="pregunta-bloque">
-    <p><strong>¿Tenés más TIEMPO para ejecutar vos, o más CAPITAL para delegar e invertir?</strong></p>
-    <textarea id="p3" placeholder="Ej: Tengo poco tiempo por otro trabajo, pero puedo invertir algo en publicidad." rows="3" style="min-height:80px;"></textarea>
-  </div>
-  <button onclick="mostrarFeedback()">Continuar</button>
-</div>
-
+<!-- FEEDBACK — 2 preguntas limpias, sin pregunta de recursos -->
 <div id="feedback" class="block purple" style="display:none;">
-  <h3>🔎 Feedback breve del primer análisis</h3>
+  <h3>Antes de continuar, dos preguntas rápidas</h3>
   <div class="pregunta-bloque">
-    <p><strong>¿Este análisis te mostró algo de tu negocio que no estabas viendo?</strong></p>
-    <textarea id="f1" placeholder="Ej: Sí, me di cuenta que..." rows="2" style="min-height:60px;"></textarea>
+    <p><strong>Del 1 al 10, ¿qué tan preciso fue este diagnóstico para tu negocio?</strong></p>
+    <textarea id="f1" placeholder="Ej: Le doy un 8, dio justo en el punto que más me preocupaba." rows="2" style="min-height:60px;"></textarea>
   </div>
   <div class="pregunta-bloque">
-    <p><strong>¿Qué punto específico te resultó más útil?</strong></p>
-    <textarea id="f2" placeholder="Ej: Me sirvió mucho la parte de..." rows="2" style="min-height:60px;"></textarea>
+    <p><strong>¿Hay algo de tu situación que no quedó reflejado en el análisis?</strong></p>
+    <textarea id="f2" placeholder="Ej: No mencionó que también tengo dificultades con los proveedores." rows="2" style="min-height:60px;"></textarea>
   </div>
-  <div class="pregunta-bloque">
-    <p><strong>Del 1 al 10, ¿qué tan clara te resultó la respuesta?</strong></p>
-    <textarea id="f3" placeholder="Ej: Le doy un 8." rows="2" style="min-height:60px;"></textarea>
-  </div>
-  <button class="cta" onclick="generarAnalisisCompleto()">🚀 DESBLOQUEAR MAPA DE EJECUCIÓN</button>
+  <button class="cta" onclick="generarAnalisisCompleto()">🚀 GENERAR MI MAPA DE EJECUCIÓN</button>
 </div>
 
 <div id="analisisCompleto" class="block"></div>
@@ -217,8 +206,6 @@ li{margin-bottom:6px;}
 const API_URL     = "https://problema-cero-api.onrender.com/api/diagnostico";
 const PDF_API_URL = "https://problema-cero-pdf-production.up.railway.app/generar-pdf";
 
-// Almacena los arrays estructurados cuando llegan de la API
-// Si la API no los devuelve (fallback), queda vacío
 let _planData = {
   plan7Dias:  [],
   plan30Dias: [],
@@ -226,31 +213,6 @@ let _planData = {
   escenarios: [],
   mensajes:   []
 };
-
-function renderPlanEnPantalla(planData) {
-  let html = "";
-  if (planData.plan7Dias && planData.plan7Dias.length) {
-    html += "\n\n📅 PLAN DE ACCIÓN — PRÓXIMOS 7 DÍAS\n\n";
-    planData.plan7Dias.forEach(d => { html += "DÍA " + d.dia + " — " + d.accion + "\n\n"; });
-  }
-  if (planData.plan30Dias && planData.plan30Dias.length) {
-    html += "\n📆 PLAN DE ACCIÓN — PRÓXIMOS 30 DÍAS\n\n";
-    planData.plan30Dias.forEach(s => { html += "SEMANA " + s.semana + " — " + s.objetivo + "\n" + s.accion + "\n\n"; });
-  }
-  if (planData.contenidos && planData.contenidos.length) {
-    html += "\n📌 CONTENIDO QUE DEBERÍA CREAR\n\n";
-    planData.contenidos.forEach(c => { html += c.numero + '. "' + c.gancho + '"\nTema: ' + c.tema + "\nObjetivo: " + c.objetivo + "\n\n"; });
-  }
-  if (planData.mensajes && planData.mensajes.length) {
-    html += "\n💬 MENSAJES DE VENTA LISTOS PARA USAR\n\n";
-    planData.mensajes.forEach(m => { html += m.numero + '. "' + m.texto + '"\n\n'; });
-  }
-  if (planData.escenarios && planData.escenarios.length) {
-    html += "\n⚠️ SI / ENTONCES\n\n";
-    planData.escenarios.forEach(e => { html += "Si " + e.condicion + ", entonces " + e.accion + "\n\n"; });
-  }
-  return html;
-}
 
 function getUserId() {
   let id = localStorage.getItem("pc_user_id");
@@ -353,16 +315,9 @@ async function consultar() {
   }
 }
 
-function mostrarPreguntas() {
-  document.getElementById("preguntas").style.display = "block";
-  document.getElementById("preguntas").scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
+// Ya no pide recursos — va directo al feedback
 function mostrarFeedback() {
-  if (!document.getElementById("p3").value.trim()) {
-    alert("Contame de qué recursos disponés para poder continuar.");
-    return;
-  }
+  document.getElementById("ctaRapido").style.display = "none";
   document.getElementById("feedback").style.display = "block";
   document.getElementById("feedback").scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -370,13 +325,15 @@ function mostrarFeedback() {
 async function generarAnalisisCompleto() {
   const f1 = document.getElementById("f1").value.trim();
   const f2 = document.getElementById("f2").value.trim();
-  const f3 = document.getElementById("f3").value.trim();
-  if (!f1||!f2||!f3) { alert("Por favor completá las respuestas para desbloquear tu plan."); return; }
+  if (!f1 || !f2) {
+    alert("Por favor respondé las dos preguntas para desbloquear tu mapa de ejecución.");
+    return;
+  }
 
+  // Construimos el pedido sin la pregunta de recursos
   const pedidoCompleto =
     `ANÁLISIS COMPLETO\n\nCASO ORIGINAL:\n${localStorage.getItem("pc_problem")}` +
-    `\n\nRECURSOS DISPONIBLES (TIEMPO VS CAPITAL):\n${document.getElementById("p3").value}` +
-    `\n\nFEEDBACK DEL USUARIO:\n1. ${f1}\n2. ${f2}\n3. ${f3}`;
+    `\n\nFEEDBACK DEL USUARIO:\n1. Precisión del diagnóstico: ${f1}\n2. Contexto adicional: ${f2}`;
 
   const analisis             = document.getElementById("analisisCompleto");
   const btnDescargarAnalisis = document.getElementById("btnDescargarAnalisis");
@@ -386,7 +343,6 @@ async function generarAnalisisCompleto() {
   analisis.innerText = "Armando tu mapa de ejecución paso a paso...";
   analisis.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  // Resetear planData antes de cada generación
   _planData = { plan7Dias: [], plan30Dias: [], contenidos: [], escenarios: [], mensajes: [] };
 
   try {
@@ -403,8 +359,6 @@ async function generarAnalisisCompleto() {
 
     analisis.innerText = data.diagnostico || "No se pudo generar el documento.";
 
-    // Guardar arrays estructurados si la API los devolvió
-    // Si no los devolvió (fallback), _planData queda con arrays vacíos
     if (data.plan7Dias  && data.plan7Dias.length  > 0) _planData.plan7Dias  = data.plan7Dias;
     if (data.plan30Dias && data.plan30Dias.length > 0) _planData.plan30Dias = data.plan30Dias;
     if (data.contenidos && data.contenidos.length > 0) _planData.contenidos = data.contenidos;
@@ -443,7 +397,6 @@ async function descargarPDFBackend(contenido, planData, nombreArchivo, idBoton) 
   boton.disabled  = true;
 
   try {
-    // Armar el payload con el texto + los arrays estructurados
     const payload = {
       diagnostico: contenido,
       plan7Dias:   planData.plan7Dias  || [],
@@ -471,7 +424,6 @@ async function descargarPDFBackend(contenido, planData, nombreArchivo, idBoton) 
   }
 }
 
-// PDF DIAGNÓSTICO — sin arrays (no cambió nada)
 async function descargarDiagnosticoPDF() {
   const contenido = document.getElementById("resultado").innerText;
   await descargarPDFBackend(
@@ -482,7 +434,6 @@ async function descargarDiagnosticoPDF() {
   );
 }
 
-// PDF PLAN — con arrays estructurados si están disponibles
 async function descargarAnalisisPDF() {
   const contenido = document.getElementById("analisisCompleto").innerText;
   await descargarPDFBackend(
